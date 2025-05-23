@@ -111,9 +111,9 @@ const SoundHapticSettings = () => {
   ];
 
   return (
-    <Card className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
+    <Card className="bg-card backdrop-blur-sm border-2 border-border shadow-xl">
       <CardHeader>
-        <CardTitle className="text-lg flex items-center text-slate-900 dark:text-white">
+        <CardTitle className="text-lg flex items-center text-card-foreground">
           Feedback Settings
         </CardTitle>
       </CardHeader>
@@ -122,8 +122,8 @@ const SoundHapticSettings = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <Volume2 className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-              <Label htmlFor="sound" className="text-slate-800 dark:text-slate-100 font-medium">
+              <Volume2 className="h-4 w-4 text-primary" />
+              <Label htmlFor="sound" className="text-card-foreground font-medium">
                 Sound Feedback
               </Label>
             </div>
@@ -137,14 +137,18 @@ const SoundHapticSettings = () => {
           {soundEnabled && (
             <div className="space-y-3 ml-6">
               <div>
-                <Label className="text-sm text-slate-700 dark:text-slate-300 font-medium">Sound Type</Label>
+                <Label className="text-sm text-card-foreground font-medium">Sound Type</Label>
                 <Select value={soundType} onValueChange={handleSoundTypeChange}>
-                  <SelectTrigger className="mt-1 bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600">
+                  <SelectTrigger className="mt-1 bg-input border-2 border-border text-foreground">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-popover border-2 border-border">
                     {soundOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
+                      <SelectItem 
+                        key={option.value} 
+                        value={option.value}
+                        className="text-popover-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      >
                         {option.label}
                       </SelectItem>
                     ))}
@@ -156,7 +160,7 @@ const SoundHapticSettings = () => {
                 onClick={previewSound}
                 variant="outline"
                 size="sm"
-                className="w-full border-2 border-emerald-300 text-emerald-700 hover:bg-emerald-50 dark:border-emerald-600 dark:text-emerald-400 dark:hover:bg-emerald-900/30 font-medium"
+                className="w-full border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-medium"
               >
                 <Play className="h-4 w-4 mr-2" />
                 Preview Sound
@@ -169,8 +173,8 @@ const SoundHapticSettings = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <Smartphone className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-              <Label htmlFor="haptic" className="text-slate-800 dark:text-slate-100 font-medium">
+              <Smartphone className="h-4 w-4 text-primary" />
+              <Label htmlFor="haptic" className="text-card-foreground font-medium">
                 Haptic Feedback
               </Label>
             </div>
@@ -184,14 +188,18 @@ const SoundHapticSettings = () => {
           {hapticEnabled && (
             <div className="space-y-3 ml-6">
               <div>
-                <Label className="text-sm text-slate-700 dark:text-slate-300 font-medium">Haptic Pattern</Label>
+                <Label className="text-sm text-card-foreground font-medium">Haptic Pattern</Label>
                 <Select value={hapticPattern} onValueChange={handleHapticPatternChange}>
-                  <SelectTrigger className="mt-1 bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600">
+                  <SelectTrigger className="mt-1 bg-input border-2 border-border text-foreground">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-popover border-2 border-border">
                     {hapticOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
+                      <SelectItem 
+                        key={option.value} 
+                        value={option.value}
+                        className="text-popover-foreground hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                      >
                         {option.label}
                       </SelectItem>
                     ))}
@@ -203,7 +211,7 @@ const SoundHapticSettings = () => {
                 onClick={testHaptic}
                 variant="outline"
                 size="sm"
-                className="w-full border-2 border-violet-300 text-violet-700 hover:bg-violet-50 dark:border-violet-600 dark:text-violet-400 dark:hover:bg-violet-900/30 font-medium"
+                className="w-full border-2 border-secondary text-secondary-foreground hover:bg-secondary hover:text-secondary-foreground font-medium"
               >
                 <TestTube className="h-4 w-4 mr-2" />
                 Test Haptic

@@ -67,15 +67,15 @@ const BreathingAnimation = ({
   const getPhaseColor = () => {
     switch (phase) {
       case 'inhale':
-        return 'from-indigo-500 to-blue-400';
+        return 'from-primary to-teal-500';
       case 'hold-inhale':
-        return 'from-blue-400 to-cyan-400';
+        return 'from-teal-500 to-teal-400';
       case 'exhale':
-        return 'from-cyan-400 to-teal-400';
+        return 'from-teal-400 to-accent';
       case 'hold-exhale':
-        return 'from-teal-400 to-indigo-500';
+        return 'from-accent to-primary';
       default:
-        return 'from-indigo-500 to-blue-400';
+        return 'from-primary to-teal-500';
     }
   };
 
@@ -98,7 +98,7 @@ const BreathingAnimation = ({
     <div className="flex flex-col items-center justify-center h-full">
       <div className="relative">
         {/* Outer ring */}
-        <div className="w-80 h-80 rounded-full border-2 border-slate-300 dark:border-slate-600 opacity-40"></div>
+        <div className="w-80 h-80 rounded-full border-2 border-border opacity-40"></div>
         
         {/* Breathing circle */}
         <div
