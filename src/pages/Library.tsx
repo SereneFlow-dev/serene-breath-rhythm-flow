@@ -1,18 +1,21 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, Filter, Play } from "lucide-react";
+import { Search, Filter, Play, Info } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
-import { breathingTechniques } from "@/data/breathingTechniques";
+import TechniqueDetailModal from "@/components/TechniqueDetailModal";
+import { breathingTechniques, BreathingTechnique } from "@/data/breathingTechniques";
 
 const Library = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
+  const [selectedTechnique, setSelectedTechnique] = useState<BreathingTechnique | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const categories = ["Relaxation", "Focus", "Energy", "Sleep", "Health", "Pranayama", "Meditation", "Therapeutic"];
   const difficulties = ["Beginner", "Intermediate", "Advanced", "Expert"];
@@ -30,6 +33,11 @@ const Library = () => {
     setSelectedCategory(null);
     setSelectedDifficulty(null);
     setSearchTerm("");
+  };
+
+  const handleTechniqueClick = (technique: BreathingTechnique) => {
+    setSelectedTechnique(technique);
+    setIsModalOpen(true);
   };
 
   const hasActiveFilters = selectedCategory || selectedDifficulty || searchTerm;
@@ -155,16 +163,28 @@ const Library = () => {
                       )}
                     </div>
 
-                    <div className="text-xs text-slate-500 dark:text-slate-400">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mb-3">
                       Pattern: {technique.defaultPattern.inhale}s - {technique.defaultPattern.holdAfterInhale}s - {technique.defaultPattern.exhale}s - {technique.defaultPattern.holdAfterExhale}s
                     </div>
+
+                    <div className="flex gap-2">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        className="border-serene-teal text-serene-teal hover:bg-serene-teal hover:text-white text-xs"
+                        onClick={() => handleTechniqueClick(technique)}
+                      >
+                        <Info className="h-3 w-3 mr-1" />
+                        Details
+                      </Button>
+                      <Link to={`/session/${technique.id}`}>
+                        <Button size="sm" className="bg-serene-teal hover:bg-serene-teal/90 text-white text-xs">
+                          <Play className="h-3 w-3 mr-1" />
+                          Start
+                        </Button>
+                      </Link>
+                    </div>
                   </div>
-                  
-                  <Link to={`/session/${technique.id}`} className="ml-4">
-                    <Button size="sm" className="bg-serene-teal hover:bg-serene-teal/90 text-white">
-                      <Play className="h-4 w-4" />
-                    </Button>
-                  </Link>
                 </div>
               </CardContent>
             </Card>
@@ -184,6 +204,12 @@ const Library = () => {
           )}
         </div>
       </div>
+
+      <TechniqueDetailModal 
+        technique={selectedTechnique}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
 
       <Navigation />
     </div>
