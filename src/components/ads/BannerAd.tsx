@@ -1,18 +1,18 @@
 
 import { useEffect, useState } from 'react';
-import { AdMob, BannerAdOptions, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
+import { AdMob } from '@capacitor-community/admob';
 
 interface BannerAdProps {
   adId?: string;
-  position?: BannerAdPosition;
-  size?: BannerAdSize;
+  position?: 'TOP_CENTER' | 'BOTTOM_CENTER';
+  size?: 'BANNER' | 'LARGE_BANNER' | 'MEDIUM_RECTANGLE';
   className?: string;
 }
 
 const BannerAd = ({ 
   adId = 'ca-app-pub-3940256099942544/6300978111', // Test ad unit ID
-  position = BannerAdPosition.BOTTOM_CENTER,
-  size = BannerAdSize.BANNER,
+  position = 'BOTTOM_CENTER',
+  size = 'BANNER',
   className = ""
 }: BannerAdProps) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -29,7 +29,7 @@ const BannerAd = ({
 
     const showBannerAd = async () => {
       try {
-        const options: BannerAdOptions = {
+        const options = {
           adId,
           adSize: size,
           position,
