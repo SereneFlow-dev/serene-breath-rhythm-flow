@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Volume2, Smartphone, Play, TestTube } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -155,7 +156,7 @@ const SoundHapticSettings = () => {
                 onClick={previewSound}
                 variant="outline"
                 size="sm"
-                className="w-full border-2 border-indigo-300 text-indigo-700 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-200 dark:hover:bg-indigo-900/30 font-medium"
+                className="w-full bg-white dark:bg-slate-700 border-2 border-indigo-300 text-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 dark:border-indigo-600 dark:text-indigo-200 font-medium"
               >
                 <Play className="h-4 w-4 mr-2" />
                 Preview Sound
@@ -202,7 +203,7 @@ const SoundHapticSettings = () => {
                 onClick={testHaptic}
                 variant="outline"
                 size="sm"
-                className="w-full border-2 border-indigo-300 text-indigo-700 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-200 dark:hover:bg-indigo-900/30 font-medium"
+                className="w-full bg-white dark:bg-slate-700 border-2 border-indigo-300 text-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 dark:border-indigo-600 dark:text-indigo-200 font-medium"
               >
                 <TestTube className="h-4 w-4 mr-2" />
                 Test Haptic
