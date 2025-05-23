@@ -7,12 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { triggerHapticPattern } from "@/utils/audioUtils";
 import type { HapticPattern } from "@/utils/audioUtils";
-import { useToast } from "@/hooks/use-toast";
 
 const HapticSettings = () => {
   const [hapticEnabled, setHapticEnabled] = useState(true);
   const [hapticPattern, setHapticPattern] = useState<HapticPattern>('gentle');
-  const { toast } = useToast();
 
   useEffect(() => {
     const savedHaptic = localStorage.getItem('sereneflow-haptic');
@@ -30,30 +28,10 @@ const HapticSettings = () => {
       if ('vibrate' in navigator) {
         try {
           navigator.vibrate(100);
-          toast({
-            title: "Haptic feedback enabled",
-            description: "Vibration is now active",
-          });
         } catch (error) {
           console.log('Vibration not supported:', error);
-          toast({
-            title: "Vibration not supported",
-            description: "This device doesn't support haptic feedback",
-            variant: "destructive",
-          });
         }
-      } else {
-        toast({
-          title: "Vibration not available",
-          description: "This device or browser doesn't support vibration",
-          variant: "destructive",
-        });
       }
-    } else {
-      toast({
-        title: "Haptic feedback disabled",
-        description: "Vibration is now turned off",
-      });
     }
   };
 
@@ -71,27 +49,13 @@ const HapticSettings = () => {
 
   const testHaptic = () => {
     if (!hapticEnabled) {
-      toast({
-        title: "Enable haptic feedback first",
-        description: "Please turn on haptic feedback to test it",
-        variant: "destructive",
-      });
       return;
     }
 
     try {
       triggerHapticPattern(hapticPattern);
-      toast({
-        title: "Haptic test triggered",
-        description: `Testing ${hapticPattern} pattern`,
-      });
     } catch (error) {
       console.log('Haptic test failed:', error);
-      toast({
-        title: "Haptic test failed",
-        description: "Could not trigger haptic feedback",
-        variant: "destructive",
-      });
     }
   };
 

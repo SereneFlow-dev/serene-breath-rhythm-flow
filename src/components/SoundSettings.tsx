@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Volume2, Play } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
@@ -6,58 +7,49 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { createSoothingSound } from "@/utils/audioUtils";
 import type { SoundType } from "@/utils/audioUtils";
-import { toast } from "sonner";
+
 const SoundSettings = () => {
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [soundType, setSoundType] = useState<SoundType>('gentle-bells');
+
   useEffect(() => {
     const savedSound = localStorage.getItem('sereneflow-sound');
     const savedSoundType = localStorage.getItem('sereneflow-sound-type') as SoundType;
     if (savedSound !== null) setSoundEnabled(savedSound === 'true');
     if (savedSoundType) setSoundType(savedSoundType);
   }, []);
+
   const handleSoundToggle = (checked: boolean) => {
     setSoundEnabled(checked);
     localStorage.setItem('sereneflow-sound', checked.toString());
-    if (checked) {
-      toast.success("Sound feedback enabled");
-    } else {
-      toast.info("Sound feedback disabled");
-    }
   };
+
   const handleSoundTypeChange = (value: SoundType) => {
     setSoundType(value);
     localStorage.setItem('sereneflow-sound-type', value);
   };
+
   const previewSound = () => {
     if (!soundEnabled) {
-      toast.error("Please enable sound feedback first");
       return;
     }
     try {
       createSoothingSound(soundType, 'inhale');
-      toast.success("Playing sound preview");
     } catch (error) {
-      toast.error("Could not play sound");
+      console.log('Could not play sound:', error);
     }
   };
-  const soundOptions = [{
-    value: 'gentle-bells',
-    label: 'Gentle Bells'
-  }, {
-    value: 'ocean-waves',
-    label: 'Ocean Waves'
-  }, {
-    value: 'forest-rain',
-    label: 'Forest Rain'
-  }, {
-    value: 'singing-bowl',
-    label: 'Singing Bowl'
-  }, {
-    value: 'wind-chimes',
-    label: 'Wind Chimes'
-  }];
-  return <div className="space-y-4">
+
+  const soundOptions = [
+    { value: 'gentle-bells', label: 'Gentle Bells' },
+    { value: 'ocean-waves', label: 'Ocean Waves' },
+    { value: 'forest-rain', label: 'Forest Rain' },
+    { value: 'singing-bowl', label: 'Singing Bowl' },
+    { value: 'wind-chimes', label: 'Wind Chimes' }
+  ];
+
+  return (
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Volume2 className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
@@ -68,7 +60,8 @@ const SoundSettings = () => {
         <Switch id="sound" checked={soundEnabled} onCheckedChange={handleSoundToggle} />
       </div>
       
-      {soundEnabled && <div className="space-y-3 ml-6">
+      {soundEnabled && (
+        <div className="space-y-3 ml-6">
           <div>
             <Label className="text-sm text-slate-800 dark:text-slate-200 font-medium">Sound Type</Label>
             <Select value={soundType} onValueChange={handleSoundTypeChange}>
@@ -76,18 +69,28 @@ const SoundSettings = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600">
-                {soundOptions.map(option => <SelectItem key={option.value} value={option.value} className="text-black dark:text-slate-100">
+                {soundOptions.map(option => (
+                  <SelectItem key={option.value} value={option.value} className="text-black dark:text-slate-100">
                     {option.label}
-                  </SelectItem>)}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
           
-          <Button onClick={previewSound} variant="outline" size="sm" className="w-full border-2 border-indigo-300 dark:border-indigo-600 font-medium bg-slate-500 hover:bg-slate-400 text-slate-950">
+          <Button 
+            onClick={previewSound} 
+            variant="outline" 
+            size="sm" 
+            className="w-full border-2 border-indigo-300 dark:border-indigo-600 font-medium bg-slate-500 hover:bg-slate-400 text-slate-950"
+          >
             <Play className="h-4 w-4 mr-2" />
             Preview Sound
           </Button>
-        </div>}
-    </div>;
+        </div>
+      )}
+    </div>
+  );
 };
+
 export default SoundSettings;
