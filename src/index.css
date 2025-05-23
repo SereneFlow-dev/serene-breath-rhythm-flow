@@ -5,45 +5,7 @@
 
 @layer base {
   :root {
-    --background: 255 255 255; /* Pure white for light mode */
-    --foreground: 51 65 85;
-
-    --card: 255 255 255;
-    --card-foreground: 51 65 85;
-
-    --popover: 255 255 255;
-    --popover-foreground: 51 65 85;
-
-    --primary: 79 70 229; /* indigo-600 */
-    --primary-foreground: 248 250 252;
-
-    --secondary: 241 245 249;
-    --secondary-foreground: 51 65 85;
-
-    --muted: 248 250 252;
-    --muted-foreground: 100 116 139;
-
-    --accent: 129 140 248; /* indigo-400 */
-    --accent-foreground: 51 65 85;
-
-    --destructive: 239 68 68;
-    --destructive-foreground: 248 250 252;
-
-    --border: 226 232 240;
-    --input: 226 232 240;
-    --ring: 79 70 229; /* indigo-600 */
-
-    --radius: 0.75rem;
-
-    /* SereneFlow custom colors */
-    --serene-teal: 79 70 229; /* indigo-600 */
-    --serene-blue: 99 102 241; /* indigo-500 */
-    --serene-sage: 129 140 248; /* indigo-400 */
-    --serene-sand: 165 180 252; /* indigo-300 */
-    --serene-lavender: 199 210 254; /* indigo-200 */
-  }
-
-  .dark {
+    /* Dark mode variables as default */
     --background: 15 23 42; /* Dark slate background */
     --foreground: 248 250 252;
 
@@ -72,11 +34,51 @@
     --input: 51 65 85;
     --ring: 99 102 241; /* indigo-500 */
 
+    --radius: 0.75rem;
+
+    /* SereneFlow custom colors for dark mode */
     --serene-teal: 129 140 248; /* indigo-400 */
     --serene-blue: 99 102 241; /* indigo-500 */
     --serene-sage: 79 70 229; /* indigo-600 */
     --serene-sand: 55 48 163; /* indigo-800 */
     --serene-lavender: 67 56 202; /* indigo-700 */
+  }
+
+  .dark {
+    /* Keep dark mode variables for consistency */
+    --background: 15 23 42;
+    --foreground: 248 250 252;
+
+    --card: 30 41 59;
+    --card-foreground: 248 250 252;
+
+    --popover: 30 41 59;
+    --popover-foreground: 248 250 252;
+
+    --primary: 99 102 241;
+    --primary-foreground: 15 23 42;
+
+    --secondary: 30 41 59;
+    --secondary-foreground: 248 250 252;
+
+    --muted: 30 41 59;
+    --muted-foreground: 148 163 184;
+
+    --accent: 129 140 248;
+    --accent-foreground: 248 250 252;
+
+    --destructive: 220 38 38;
+    --destructive-foreground: 248 250 252;
+
+    --border: 51 65 85;
+    --input: 51 65 85;
+    --ring: 99 102 241;
+
+    --serene-teal: 129 140 248;
+    --serene-blue: 99 102 241;
+    --serene-sage: 79 70 229;
+    --serene-sand: 55 48 163;
+    --serene-lavender: 67 56 202;
   }
 }
 
@@ -87,7 +89,7 @@
   }
 
   html {
-    @apply bg-white dark:bg-slate-900;
+    @apply bg-slate-900 text-slate-100;
     min-height: 100vh;
     width: 100vw;
     margin: 0;
@@ -97,7 +99,7 @@
   }
 
   body {
-    @apply bg-white dark:bg-slate-900 text-foreground font-sans;
+    @apply bg-slate-900 text-foreground font-sans;
     min-height: 100vh;
     width: 100vw;
     margin: 0;
@@ -107,7 +109,7 @@
   }
 
   #root {
-    @apply bg-white dark:bg-slate-900;
+    @apply bg-slate-900;
     min-height: 100vh;
     width: 100vw;
     overflow-x: hidden;

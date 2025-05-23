@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
-import { Moon, Sun, BookOpen, Info, Trash2, UserPlus, LogOut, User } from "lucide-react";
+import { BookOpen, Info, Trash2, UserPlus, LogOut, User } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import Navigation from "@/components/Navigation";
 import SoundHapticSettings from "@/components/SoundHapticSettings";
@@ -11,24 +9,21 @@ import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+
 const Settings = () => {
-  const [darkMode, setDarkMode] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
   const {
     user,
     signOut
   } = useAuth();
+
   useEffect(() => {
-    // Load theme from localStorage
-    const savedTheme = localStorage.getItem('sereneflow-theme');
-    if (savedTheme === 'dark') {
-      setDarkMode(true);
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    // Always set dark mode
+    document.documentElement.classList.add('dark');
+    localStorage.setItem('sereneflow-theme', 'dark');
   }, []);
+
   useEffect(() => {
     // Load user profile when user changes
     if (user) {
@@ -37,6 +32,7 @@ const Settings = () => {
       setUserProfile(null);
     }
   }, [user]);
+
   const loadUserProfile = async () => {
     if (!user) return;
     try {
@@ -53,15 +49,7 @@ const Settings = () => {
       console.error('Error loading profile:', error);
     }
   };
-  const handleThemeChange = (checked: boolean) => {
-    setDarkMode(checked);
-    localStorage.setItem('sereneflow-theme', checked ? 'dark' : 'light');
-    if (checked) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  };
+
   const clearAllData = () => {
     const confirm = window.confirm('Are you sure you want to clear all your local data? This action cannot be undone.');
     if (confirm) {
@@ -72,6 +60,7 @@ const Settings = () => {
       toast.success('All local data cleared');
     }
   };
+
   const deleteAccount = async () => {
     const confirm = window.confirm('Are you sure you want to delete your account? This action cannot be undone and will remove all your data.');
     if (confirm && user) {
@@ -96,6 +85,7 @@ const Settings = () => {
       }
     }
   };
+
   const exportData = async () => {
     let data: any = {
       exportDate: new Date().toISOString(),
@@ -131,10 +121,12 @@ const Settings = () => {
     URL.revokeObjectURL(url);
     toast.success('Data exported successfully');
   };
+
   const handleUserChange = (newUser: any) => {
     // User state is handled by AuthProvider
     setIsAuthModalOpen(false);
   };
+
   const handleLogout = async () => {
     try {
       await signOut();
@@ -143,6 +135,7 @@ const Settings = () => {
       toast.error('Failed to logout');
     }
   };
+
   return <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-20">
       <div className="container mx-auto px-4 py-8 max-w-md">
         {/* Header */}
@@ -179,24 +172,6 @@ const Settings = () => {
                   Logout
                 </Button>
               </div>}
-          </CardContent>
-        </Card>
-
-        {/* Appearance */}
-        <Card className="mb-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center text-slate-900 dark:text-slate-100">
-              {darkMode ? <Moon className="h-5 w-5 mr-2" /> : <Sun className="h-5 w-5 mr-2" />}
-              Appearance
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="dark-mode" className="text-slate-900 dark:text-slate-100 font-medium">
-                Dark Mode
-              </Label>
-              <Switch id="dark-mode" checked={darkMode} onCheckedChange={handleThemeChange} />
-            </div>
           </CardContent>
         </Card>
 
@@ -277,4 +252,5 @@ const Settings = () => {
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onUserChange={handleUserChange} />
     </div>;
 };
+
 export default Settings;

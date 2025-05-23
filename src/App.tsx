@@ -11,13 +11,20 @@ import Learn from "./pages/Learn";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 import { AuthProvider } from "./hooks/useAuth";
+import { useEffect } from "react";
 import "./App.css";
 
 const queryClient = new QueryClient();
 
 function App() {
+  useEffect(() => {
+    // Force dark mode on app load
+    document.documentElement.classList.add('dark');
+    localStorage.setItem('sereneflow-theme', 'dark');
+  }, []);
+
   return (
-    <div className="min-h-screen w-screen bg-white dark:bg-slate-900">
+    <div className="min-h-screen w-screen bg-slate-900">
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <Router>
