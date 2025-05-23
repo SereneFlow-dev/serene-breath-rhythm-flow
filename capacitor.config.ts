@@ -2,7 +2,7 @@
 import { CapacitorConfig } from '@capacitor/core';
 
 const config: CapacitorConfig = {
-  appId: 'app.lovable.89347f8272104fdf8da1cfba119d7806',
+  appId: 'com.sereneflow.app',
   appName: 'SereneFlow',
   webDir: 'dist',
   server: {
