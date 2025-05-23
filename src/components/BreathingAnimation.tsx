@@ -79,21 +79,6 @@ const BreathingAnimation = ({
     }
   };
 
-  const getPhaseText = () => {
-    switch (phase) {
-      case 'inhale':
-        return 'Breathe In';
-      case 'hold-inhale':
-        return 'Hold';
-      case 'exhale':
-        return 'Breathe Out';
-      case 'hold-exhale':
-        return 'Hold';
-      default:
-        return 'Breathe';
-    }
-  };
-
   const getEasingFunction = () => {
     switch (phase) {
       case 'inhale':
@@ -111,7 +96,7 @@ const BreathingAnimation = ({
 
   return (
     <div className="flex flex-col items-center justify-center h-full">
-      <div className="relative mb-8">
+      <div className="relative">
         {/* Outer ring */}
         <div className="w-80 h-80 rounded-full border-2 border-slate-300 dark:border-slate-600 opacity-40"></div>
         
@@ -129,16 +114,6 @@ const BreathingAnimation = ({
 
         {/* Center dot */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg opacity-90"></div>
-      </div>
-
-      {/* Phase indicator */}
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">
-          {getPhaseText()}
-        </h2>
-        <div className="text-lg text-slate-600 dark:text-slate-300 font-semibold">
-          {Math.ceil(duration / 1000)}s
-        </div>
       </div>
     </div>
   );

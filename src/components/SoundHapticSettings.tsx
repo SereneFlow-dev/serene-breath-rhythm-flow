@@ -1,53 +1,114 @@
 
 import { useState, useEffect } from "react";
-import { Volume2, Smartphone, Play } from "lucide-react";
+import { Volume2, Smartphone, Play, TestTube } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { soundConfigs, hapticPatterns, createSoothingSound, triggerHapticPattern } from "@/utils/audioUtils";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { createSoothingSound, triggerHapticPattern } from "@/utils/audioUtils";
 import type { SoundType, HapticPattern } from "@/utils/audioUtils";
 import { toast } from "sonner";
 
 const SoundHapticSettings = () => {
-  const [selectedSound, setSelectedSound] = useState<SoundType>('gentle-bells');
-  const [selectedHaptic, setSelectedHaptic] = useState<HapticPattern>('gentle');
+  const [soundEnabled, setSoundEnabled] = useState(false);
+  const [hapticEnabled, setHapticEnabled] = useState(true);
+  const [soundType, setSoundType] = useState<SoundType>('gentle-bells');
+  const [hapticPattern, setHapticPattern] = useState<HapticPattern>('gentle');
 
   useEffect(() => {
-    const savedSound = localStorage.getItem('sereneflow-sound-type') as SoundType;
-    const savedHaptic = localStorage.getItem('sereneflow-haptic-pattern') as HapticPattern;
+    const savedSound = localStorage.getItem('sereneflow-sound');
+    const savedHaptic = localStorage.getItem('sereneflow-haptic');
+    const savedSoundType = localStorage.getItem('sereneflow-sound-type') as SoundType;
+    const savedHapticPattern = localStorage.getItem('sereneflow-haptic-pattern') as HapticPattern;
     
-    if (savedSound && soundConfigs[savedSound]) setSelectedSound(savedSound);
-    if (savedHaptic && hapticPatterns[savedHaptic]) setSelectedHaptic(savedHaptic);
+    if (savedSound !== null) setSoundEnabled(savedSound === 'true');
+    if (savedHaptic !== null) setHapticEnabled(savedHaptic !== 'false');
+    if (savedSoundType) setSoundType(savedSoundType);
+    if (savedHapticPattern) setHapticPattern(savedHapticPattern);
   }, []);
 
-  const handleSoundChange = (sound: SoundType) => {
-    setSelectedSound(sound);
-    localStorage.setItem('sereneflow-sound-type', sound);
-    localStorage.setItem('sereneflow-sound', sound === 'silent' ? 'false' : 'true');
-    toast.success(`Sound changed to ${soundConfigs[sound].name}`);
+  const handleSoundToggle = (checked: boolean) => {
+    setSoundEnabled(checked);
+    localStorage.setItem('sereneflow-sound', checked.toString());
+    
+    if (checked) {
+      toast.success("Sound feedback enabled");
+    } else {
+      toast.info("Sound feedback disabled");
+    }
   };
 
-  const handleHapticChange = (haptic: HapticPattern) => {
-    setSelectedHaptic(haptic);
-    localStorage.setItem('sereneflow-haptic-pattern', haptic);
-    localStorage.setItem('sereneflow-haptic', haptic === 'off' ? 'false' : 'true');
-    toast.success(`Haptic pattern changed to ${hapticPatterns[haptic].name}`);
+  const handleHapticToggle = (checked: boolean) => {
+    setHapticEnabled(checked);
+    localStorage.setItem('sereneflow-haptic', checked.toString());
+    
+    if (checked && 'vibrate' in navigator) {
+      try {
+        navigator.vibrate(100);
+        toast.success("Haptic feedback enabled");
+      } catch (error) {
+        console.log('Vibration not supported');
+        toast.error("Vibration not supported on this device");
+      }
+    } else if (!checked) {
+      toast.info("Haptic feedback disabled");
+    }
+  };
+
+  const handleSoundTypeChange = (value: SoundType) => {
+    setSoundType(value);
+    localStorage.setItem('sereneflow-sound-type', value);
+  };
+
+  const handleHapticPatternChange = (value: HapticPattern) => {
+    setHapticPattern(value);
+    localStorage.setItem('sereneflow-haptic-pattern', value);
   };
 
   const previewSound = () => {
-    if (selectedSound !== 'silent') {
-      createSoothingSound(selectedSound, 'inhale');
-      toast.info("Playing sound preview");
+    if (!soundEnabled) {
+      toast.error("Please enable sound feedback first");
+      return;
+    }
+    
+    try {
+      createSoothingSound(soundType, 'inhale');
+      toast.success("Playing sound preview");
+    } catch (error) {
+      toast.error("Could not play sound");
     }
   };
 
-  const previewHaptic = () => {
-    if (selectedHaptic !== 'off') {
-      triggerHapticPattern(selectedHaptic);
-      toast.info("Testing haptic pattern");
+  const testHaptic = () => {
+    if (!hapticEnabled) {
+      toast.error("Please enable haptic feedback first");
+      return;
+    }
+    
+    try {
+      triggerHapticPattern(hapticPattern);
+      toast.success("Haptic feedback triggered");
+    } catch (error) {
+      toast.error("Could not trigger haptic feedback");
     }
   };
+
+  const soundOptions = [
+    { value: 'gentle-bells', label: 'Gentle Bells' },
+    { value: 'ocean-waves', label: 'Ocean Waves' },
+    { value: 'forest-rain', label: 'Forest Rain' },
+    { value: 'singing-bowl', label: 'Singing Bowl' },
+    { value: 'wind-chimes', label: 'Wind Chimes' }
+  ];
+
+  const hapticOptions = [
+    { value: 'gentle', label: 'Gentle' },
+    { value: 'medium', label: 'Medium' },
+    { value: 'strong', label: 'Strong' },
+    { value: 'subtle', label: 'Subtle' },
+    { value: 'rhythmic', label: 'Rhythmic' }
+  ];
 
   return (
     <Card className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
@@ -58,74 +119,96 @@ const SoundHapticSettings = () => {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Sound Settings */}
-        <div className="space-y-3">
-          <div className="flex items-center space-x-2">
-            <Volume2 className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-            <Label className="text-slate-800 dark:text-slate-100 font-medium">
-              Sound Type
-            </Label>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Volume2 className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+              <Label htmlFor="sound" className="text-slate-800 dark:text-slate-100 font-medium">
+                Sound Feedback
+              </Label>
+            </div>
+            <Switch
+              id="sound"
+              checked={soundEnabled}
+              onCheckedChange={handleSoundToggle}
+            />
           </div>
-          <Select value={selectedSound} onValueChange={handleSoundChange}>
-            <SelectTrigger className="bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600">
-              {Object.entries(soundConfigs).map(([key, config]) => (
-                <SelectItem key={key} value={key}>
-                  <div>
-                    <div className="font-medium">{config.name}</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">{config.description}</div>
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {selectedSound !== 'silent' && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={previewSound}
-              className="w-full border-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-indigo-900/30"
-            >
-              <Play className="h-3 w-3 mr-2" />
-              Preview Sound
-            </Button>
+          
+          {soundEnabled && (
+            <div className="space-y-3 ml-6">
+              <div>
+                <Label className="text-sm text-slate-700 dark:text-slate-300 font-medium">Sound Type</Label>
+                <Select value={soundType} onValueChange={handleSoundTypeChange}>
+                  <SelectTrigger className="mt-1 bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {soundOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <Button
+                onClick={previewSound}
+                variant="outline"
+                size="sm"
+                className="w-full border-2 border-emerald-300 text-emerald-700 hover:bg-emerald-50 dark:border-emerald-600 dark:text-emerald-400 dark:hover:bg-emerald-900/30 font-medium"
+              >
+                <Play className="h-4 w-4 mr-2" />
+                Preview Sound
+              </Button>
+            </div>
           )}
         </div>
 
         {/* Haptic Settings */}
-        <div className="space-y-3">
-          <div className="flex items-center space-x-2">
-            <Smartphone className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-            <Label className="text-slate-800 dark:text-slate-100 font-medium">
-              Haptic Pattern
-            </Label>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Smartphone className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+              <Label htmlFor="haptic" className="text-slate-800 dark:text-slate-100 font-medium">
+                Haptic Feedback
+              </Label>
+            </div>
+            <Switch
+              id="haptic"
+              checked={hapticEnabled}
+              onCheckedChange={handleHapticToggle}
+            />
           </div>
-          <Select value={selectedHaptic} onValueChange={handleHapticChange}>
-            <SelectTrigger className="bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className="bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600">
-              {Object.entries(hapticPatterns).map(([key, pattern]) => (
-                <SelectItem key={key} value={key}>
-                  <div>
-                    <div className="font-medium">{pattern.name}</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">{pattern.description}</div>
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {selectedHaptic !== 'off' && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={previewHaptic}
-              className="w-full border-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-indigo-900/30"
-            >
-              <Smartphone className="h-3 w-3 mr-2" />
-              Test Haptic
-            </Button>
+          
+          {hapticEnabled && (
+            <div className="space-y-3 ml-6">
+              <div>
+                <Label className="text-sm text-slate-700 dark:text-slate-300 font-medium">Haptic Pattern</Label>
+                <Select value={hapticPattern} onValueChange={handleHapticPatternChange}>
+                  <SelectTrigger className="mt-1 bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {hapticOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <Button
+                onClick={testHaptic}
+                variant="outline"
+                size="sm"
+                className="w-full border-2 border-violet-300 text-violet-700 hover:bg-violet-50 dark:border-violet-600 dark:text-violet-400 dark:hover:bg-violet-900/30 font-medium"
+              >
+                <TestTube className="h-4 w-4 mr-2" />
+                Test Haptic
+              </Button>
+            </div>
           )}
         </div>
       </CardContent>
