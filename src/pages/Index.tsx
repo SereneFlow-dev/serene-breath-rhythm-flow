@@ -40,8 +40,8 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-20">
-      <div className="container mx-auto px-4 py-8 max-w-md">
+    <div className="min-h-screen h-screen w-screen flex flex-col">
+      <div className="container mx-auto px-4 py-8 max-w-md flex-1">
         {/* Header */}
         <div className="text-center mb-8">
           {getGreeting() && (
