@@ -7,7 +7,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { createSoothingSound } from "@/utils/audioUtils";
 import type { SoundType } from "@/utils/audioUtils";
 import { toast } from "sonner";
-
 const SoundSettings = () => {
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [soundType, setSoundType] = useState<SoundType>('gentle-bells');
@@ -84,7 +83,7 @@ const SoundSettings = () => {
             </Select>
           </div>
           
-          <Button onClick={previewSound} variant="outline" size="sm" className="w-full border-2 border-indigo-300 dark:border-indigo-600 font-medium bg-slate-50 text-indigo-500">
+          <Button onClick={previewSound} variant="outline" size="sm" className="w-full border-2 border-indigo-300 dark:border-indigo-600 font-medium text-indigo-500 bg-slate-50">
             <Play className="h-4 w-4 mr-2" />
             Preview Sound
           </Button>
