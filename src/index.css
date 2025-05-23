@@ -91,6 +91,7 @@
     width: 100vw;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
   }
 
   body {
@@ -99,12 +100,14 @@
     width: 100vw;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
   }
 
   #root {
     @apply bg-white dark:bg-slate-900;
     min-height: 100vh;
     width: 100vw;
+    overflow-x: hidden;
   }
 }
 

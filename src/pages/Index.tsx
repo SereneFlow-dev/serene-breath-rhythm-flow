@@ -40,9 +40,9 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen w-screen bg-white dark:bg-slate-900">
-      <div className="flex flex-col min-h-screen w-full max-w-md mx-auto">
-        <div className="px-4 py-8 flex-1 pb-20">
+    <div className="min-h-screen w-screen bg-white dark:bg-slate-900 overflow-x-hidden">
+      <div className="flex flex-col min-h-screen w-full max-w-md mx-auto px-0">
+        <div className="px-4 py-8 flex-1 pb-20 overflow-x-hidden">
           {/* Header */}
           <div className="text-center mb-8">
             {getGreeting() && (
