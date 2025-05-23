@@ -1,6 +1,6 @@
 
 export type SoundType = 'gentle-bells' | 'nature-sounds' | 'singing-bowls' | 'soft-tones' | 'silent';
-export type HapticPattern = 'gentle' | 'rhythmic' | 'progressive' | 'subtle' | 'strong' | 'off';
+export type HapticPattern = 'gentle' | 'rhythmic' | 'progressive' | 'subtle' | 'strong' | 'medium' | 'off';
 
 interface SoundConfig {
   name: string;
@@ -89,6 +89,16 @@ export const hapticPatterns: Record<HapticPattern, { name: string; description: 
     description: 'Soft, single pulses',
     pattern: [50]
   },
+  medium: {
+    name: 'Medium',
+    description: 'Moderate vibration',
+    pattern: [100]
+  },
+  strong: {
+    name: 'Strong',
+    description: 'More pronounced feedback',
+    pattern: [150]
+  },
   rhythmic: {
     name: 'Rhythmic',
     description: 'Pattern-based vibrations',
@@ -103,11 +113,6 @@ export const hapticPatterns: Record<HapticPattern, { name: string; description: 
     name: 'Subtle',
     description: 'Very light vibrations',
     pattern: [30]
-  },
-  strong: {
-    name: 'Strong',
-    description: 'More pronounced feedback',
-    pattern: [150]
   },
   off: {
     name: 'Off',
@@ -162,20 +167,37 @@ export const createSoothingSound = (
     oscillator.start(now);
     oscillator.stop(now + attack + decay + 0.1 + release);
   } catch (error) {
-    console.log('Audio not supported');
+    console.log('Audio not supported:', error);
   }
 };
 
 export const triggerHapticPattern = (pattern: HapticPattern) => {
   const hapticEnabled = localStorage.getItem('sereneflow-haptic') !== 'false';
-  if (!hapticEnabled || !('vibrate' in navigator)) return;
+  
+  console.log('Triggering haptic pattern:', pattern, 'Enabled:', hapticEnabled);
+  
+  if (!hapticEnabled || pattern === 'off') {
+    console.log('Haptic feedback disabled or pattern is off');
+    return;
+  }
+
+  if (!('vibrate' in navigator)) {
+    console.log('Vibrate not supported in navigator');
+    return;
+  }
 
   try {
     const patternConfig = hapticPatterns[pattern];
-    if (patternConfig.pattern.length > 0) {
-      navigator.vibrate(patternConfig.pattern);
+    if (patternConfig && patternConfig.pattern.length > 0) {
+      console.log('Vibrating with pattern:', patternConfig.pattern);
+      const success = navigator.vibrate(patternConfig.pattern);
+      console.log('Vibration success:', success);
+      return success;
+    } else {
+      console.log('No pattern found for:', pattern);
     }
   } catch (error) {
-    console.log('Vibration not supported');
+    console.log('Vibration error:', error);
+    return false;
   }
 };
