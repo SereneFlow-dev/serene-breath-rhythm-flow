@@ -169,10 +169,10 @@ const Settings = () => {
       <div className="container mx-auto px-4 py-8 max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">
             Settings
           </h1>
-          <p className="text-slate-600 dark:text-slate-300 font-medium">
+          <p className="text-slate-700 dark:text-slate-200 font-medium text-base">
             Customize your experience
           </p>
         </div>
@@ -180,7 +180,7 @@ const Settings = () => {
         {/* User Account */}
         <Card className="mb-6 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
           <CardHeader>
-            <CardTitle className="text-lg flex items-center text-slate-900 dark:text-white">
+            <CardTitle className="text-lg flex items-center text-slate-900 dark:text-slate-100">
               <User className="h-5 w-5 mr-2" />
               Account
             </CardTitle>
@@ -197,7 +197,7 @@ const Settings = () => {
             ) : (
               <div className="space-y-3">
                 <div className="p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg">
-                  <p className="text-sm text-indigo-800 dark:text-indigo-200 font-medium">
+                  <p className="text-sm text-indigo-900 dark:text-indigo-100 font-medium">
                     {userProfile?.full_name && (
                       <span className="block">Welcome, {userProfile.full_name}!</span>
                     )}
@@ -207,7 +207,7 @@ const Settings = () => {
                 <Button
                   variant="outline"
                   onClick={handleLogout}
-                  className="w-full border-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-indigo-900/30 font-semibold"
+                  className="w-full border-2 border-indigo-300 text-indigo-700 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-200 dark:hover:bg-indigo-900/30 font-semibold"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
                   Logout
@@ -220,14 +220,14 @@ const Settings = () => {
         {/* Appearance */}
         <Card className="mb-6 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
           <CardHeader>
-            <CardTitle className="text-lg flex items-center text-slate-900 dark:text-white">
+            <CardTitle className="text-lg flex items-center text-slate-900 dark:text-slate-100">
               {darkMode ? <Moon className="h-5 w-5 mr-2" /> : <Sun className="h-5 w-5 mr-2" />}
               Appearance
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
             <div className="flex items-center justify-between">
-              <Label htmlFor="dark-mode" className="text-slate-800 dark:text-slate-200 font-medium">
+              <Label htmlFor="dark-mode" className="text-slate-900 dark:text-slate-100 font-medium">
                 Dark Mode
               </Label>
               <Switch
@@ -247,7 +247,7 @@ const Settings = () => {
         {/* Learning */}
         <Card className="mb-6 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
           <CardHeader>
-            <CardTitle className="text-lg flex items-center text-slate-900 dark:text-white">
+            <CardTitle className="text-lg flex items-center text-slate-900 dark:text-slate-100">
               <BookOpen className="h-5 w-5 mr-2" />
               Learning
             </CardTitle>
@@ -255,7 +255,7 @@ const Settings = () => {
           <CardContent className="p-4 pt-0">
             <Button
               variant="ghost"
-              className="w-full justify-start text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 font-medium"
+              className="w-full justify-start text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700 font-medium"
               onClick={() => window.open('/learn', '_blank')}
             >
               <BookOpen className="h-4 w-4 mr-2" />
@@ -267,7 +267,7 @@ const Settings = () => {
         {/* Data Management */}
         <Card className="mb-6 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
           <CardHeader>
-            <CardTitle className="text-lg flex items-center text-slate-900 dark:text-white">
+            <CardTitle className="text-lg flex items-center text-slate-900 dark:text-slate-100">
               <Info className="h-5 w-5 mr-2" />
               Data Management
             </CardTitle>
@@ -275,7 +275,7 @@ const Settings = () => {
           <CardContent className="p-4 pt-0 space-y-3">
             <Button
               variant="outline"
-              className="w-full justify-start border-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-indigo-900/30 font-semibold"
+              className="w-full justify-start border-2 border-indigo-300 text-indigo-700 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-200 dark:hover:bg-indigo-900/30 font-semibold"
               onClick={exportData}
             >
               Export My Data
@@ -283,7 +283,7 @@ const Settings = () => {
             
             <Button
               variant="outline"
-              className="w-full justify-start border-2 border-orange-300 text-orange-600 hover:bg-orange-50 dark:border-orange-600 dark:text-orange-400 dark:hover:bg-orange-900/30 font-semibold"
+              className="w-full justify-start border-2 border-orange-300 text-orange-700 hover:bg-orange-50 dark:border-orange-600 dark:text-orange-200 dark:hover:bg-orange-900/30 font-semibold"
               onClick={clearAllData}
             >
               <Trash2 className="h-4 w-4 mr-2" />
@@ -293,7 +293,7 @@ const Settings = () => {
             {user && (
               <Button
                 variant="outline"
-                className="w-full justify-start border-2 border-red-300 text-red-600 hover:bg-red-50 dark:border-red-600 dark:text-red-400 dark:hover:bg-red-900/30 font-semibold"
+                className="w-full justify-start border-2 border-red-300 text-red-700 hover:bg-red-50 dark:border-red-600 dark:text-red-200 dark:hover:bg-red-900/30 font-semibold"
                 onClick={deleteAccount}
               >
                 <Trash2 className="h-4 w-4 mr-2" />
@@ -307,13 +307,13 @@ const Settings = () => {
         <Card className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
           <CardContent className="p-6">
             <div className="text-center">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">
                 SereneFlow
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-300 mb-4 font-medium">
+              <p className="text-sm text-slate-700 dark:text-slate-200 mb-4 font-medium">
                 Version 1.0.0
               </p>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                 Your calm breathing companion for stress relief, focus, and mindfulness. 
                 Practice mindful breathing techniques anytime, anywhere.
               </p>
@@ -322,9 +322,9 @@ const Settings = () => {
         </Card>
 
         {/* Safety Note */}
-        <Alert className="mt-6 bg-amber-50/90 dark:bg-amber-900/30 border-2 border-amber-200 dark:border-amber-800">
+        <Alert className="mt-6 bg-amber-50/90 dark:bg-amber-900/30 border-2 border-amber-200 dark:border-amber-700">
           <Info className="h-4 w-4" />
-          <AlertDescription className="text-amber-800 dark:text-amber-200 font-medium">
+          <AlertDescription className="text-amber-900 dark:text-amber-100 font-medium">
             Always practice breathing exercises in a safe environment. Stop if you feel dizzy or uncomfortable.
           </AlertDescription>
         </Alert>
