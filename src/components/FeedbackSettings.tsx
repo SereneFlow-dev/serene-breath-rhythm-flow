@@ -4,6 +4,7 @@ import { Smartphone, Volume2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 const FeedbackSettings = () => {
   const [hapticEnabled, setHapticEnabled] = useState(true);
@@ -23,10 +24,15 @@ const FeedbackSettings = () => {
     
     if (checked && 'vibrate' in navigator) {
       try {
+        // Test vibration
         navigator.vibrate(100);
+        toast.success("Haptic feedback enabled");
       } catch (error) {
         console.log('Vibration not supported');
+        toast.error("Vibration not supported on this device");
       }
+    } else if (!checked) {
+      toast.info("Haptic feedback disabled");
     }
   };
 
@@ -49,9 +55,13 @@ const FeedbackSettings = () => {
         
         oscillator.start(audioContext.currentTime);
         oscillator.stop(audioContext.currentTime + 0.1);
+        toast.success("Sound feedback enabled");
       } catch (error) {
         console.log('Audio not supported');
+        toast.error("Audio not supported on this device");
       }
+    } else {
+      toast.info("Sound feedback disabled");
     }
   };
 

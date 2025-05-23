@@ -19,6 +19,7 @@ const BreathingAnimation = ({ phase, duration, isActive }: BreathingAnimationPro
     let targetScale = 0.8;
     let easingFunction = "ease-in-out";
 
+    // Update animation according to the breathing phase
     switch (phase) {
       case 'inhale':
         targetScale = 1.3;
@@ -38,6 +39,7 @@ const BreathingAnimation = ({ phase, duration, isActive }: BreathingAnimationPro
         break;
     }
 
+    // Set the animation properties
     const element = document.getElementById('breathing-circle');
     if (element) {
       element.style.transition = `transform ${duration}ms ${easingFunction}`;
@@ -45,6 +47,54 @@ const BreathingAnimation = ({ phase, duration, isActive }: BreathingAnimationPro
     }
 
     setAnimationScale(targetScale);
+
+    // Provide haptic feedback if enabled
+    const hapticEnabled = localStorage.getItem('sereneflow-haptic') !== 'false';
+    if (hapticEnabled && 'vibrate' in navigator) {
+      try {
+        navigator.vibrate(30);
+      } catch (error) {
+        console.log('Vibration not supported');
+      }
+    }
+
+    // Provide sound feedback if enabled
+    const soundEnabled = localStorage.getItem('sereneflow-sound') === 'true';
+    if (soundEnabled) {
+      try {
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        // Different sounds for different phases
+        let frequency = 400;
+        switch (phase) {
+          case 'inhale':
+            frequency = 350; // Lower sound for inhale
+            break;
+          case 'hold-inhale':
+            frequency = 400; // Medium sound for hold
+            break;
+          case 'exhale':
+            frequency = 450; // Higher sound for exhale
+            break;
+          case 'hold-exhale':
+            frequency = 400; // Medium sound for hold
+            break;
+        }
+
+        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.1);
+      } catch (error) {
+        console.log('Audio not supported');
+      }
+    }
   }, [phase, duration, isActive]);
 
   const getPhaseColor = () => {

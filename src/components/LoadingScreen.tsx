@@ -19,19 +19,18 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
   const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
 
   useEffect(() => {
+    // Set a timeout to hide the loading screen after 2 seconds
     const timer = setTimeout(() => {
       setIsVisible(false);
-      setTimeout(onComplete, 300); // Wait for fade out animation
-    }, 1800); // Changed to 1.8 seconds total
+      // Wait for fade out animation before calling onComplete
+      setTimeout(onComplete, 300);
+    }, 1800);
 
     return () => clearTimeout(timer);
   }, [onComplete]);
 
   if (!isVisible) {
-    return (
-      <div className="fixed inset-0 bg-gradient-to-br from-serene-teal/20 to-blue-200/30 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center z-50 opacity-0 transition-opacity duration-300">
-      </div>
-    );
+    return null; // Return null when not visible to ensure it's completely removed
   }
 
   return (

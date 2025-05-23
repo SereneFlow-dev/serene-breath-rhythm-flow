@@ -9,6 +9,7 @@ import LoadingScreen from "@/components/LoadingScreen";
 import CustomBreathingConfig from "@/components/CustomBreathingConfig";
 import FeedbackSettings from "@/components/FeedbackSettings";
 import { breathingTechniques } from "@/data/breathingTechniques";
+import { toast } from "sonner";
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -16,6 +17,28 @@ const Index = () => {
   const [streak, setStreak] = useState(0);
   const [totalSessions, setTotalSessions] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if notification permission is available
+    if ('Notification' in window) {
+      if (Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+        setTimeout(() => {
+          toast.info("Enable notifications for breathing reminders", {
+            action: {
+              label: "Enable",
+              onClick: () => {
+                Notification.requestPermission().then(permission => {
+                  if (permission === 'granted') {
+                    toast.success("Notifications enabled");
+                  }
+                });
+              },
+            },
+          });
+        }, 3000);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
