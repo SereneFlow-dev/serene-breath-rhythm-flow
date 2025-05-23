@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 
 interface LoadingScreenProps {
-  onComplete: () => void;
+  onComplete?: () => void;
 }
 
 const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
@@ -22,8 +22,10 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
     // Set a timeout to hide the loading screen after 2 seconds
     const timer = setTimeout(() => {
       setIsVisible(false);
-      // Wait for fade out animation before calling onComplete
-      setTimeout(onComplete, 300);
+      // Wait for fade out animation before calling onComplete if provided
+      if (onComplete) {
+        setTimeout(onComplete, 300);
+      }
     }, 1800);
 
     return () => clearTimeout(timer);
