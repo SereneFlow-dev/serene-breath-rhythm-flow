@@ -19,32 +19,35 @@ const Session = () => {
   const navigate = useNavigate();
   const technique = getBreathingTechnique(techniqueId || '');
 
+  // Check for custom breathing config
+  const customConfig = techniqueId === 'custom' ? JSON.parse(sessionStorage.getItem('custom-breathing-config') || '{}') : null;
+
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [currentPhase, setCurrentPhase] = useState<Phase>('inhale');
   const [currentCycle, setCurrentCycle] = useState(0);
-  const [totalCycles, setTotalCycles] = useState(5);
+  const [totalCycles, setTotalCycles] = useState(customConfig?.cycles || 5);
   const [sessionTime, setSessionTime] = useState(0);
   const [phaseTimeRemaining, setPhaseTimeRemaining] = useState(0);
 
   // Customizable timings
-  const [inhaleTime, setInhaleTime] = useState(4);
-  const [holdInhaleTime, setHoldInhaleTime] = useState(4);
-  const [exhaleTime, setExhaleTime] = useState(4);
-  const [holdExhaleTime, setHoldExhaleTime] = useState(4);
+  const [inhaleTime, setInhaleTime] = useState(customConfig?.inhale || 4);
+  const [holdInhaleTime, setHoldInhaleTime] = useState(customConfig?.holdInhale || 4);
+  const [exhaleTime, setExhaleTime] = useState(customConfig?.exhale || 4);
+  const [holdExhaleTime, setHoldExhaleTime] = useState(customConfig?.holdExhale || 4);
 
   // Custom breathing pattern
   const [customName, setCustomName] = useState("");
   const [showCustomConfig, setShowCustomConfig] = useState(false);
 
   useEffect(() => {
-    if (technique) {
+    if (technique && !customConfig) {
       setInhaleTime(technique.defaultPattern.inhale);
       setHoldInhaleTime(technique.defaultPattern.holdAfterInhale);
       setExhaleTime(technique.defaultPattern.exhale);
       setHoldExhaleTime(technique.defaultPattern.holdAfterExhale);
     }
-  }, [technique]);
+  }, [technique, customConfig]);
 
   const getPhaseTimings = () => ({
     inhale: inhaleTime * 1000,
@@ -53,19 +56,64 @@ const Session = () => {
     'hold-exhale': holdExhaleTime * 1000,
   });
 
-  const triggerHapticFeedback = useCallback((pattern: 'inhale' | 'hold' | 'exhale') => {
-    if ('vibrate' in navigator) {
-      switch (pattern) {
+  const playPhaseSound = useCallback((phase: Phase) => {
+    const soundEnabled = localStorage.getItem('sereneflow-sound') === 'true';
+    if (!soundEnabled) return;
+
+    try {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      // Different frequencies for different phases
+      let frequency = 400;
+      switch (phase) {
         case 'inhale':
-          navigator.vibrate([50, 50, 100]); // Rising pattern
+          frequency = 523; // C5 - rising
           break;
-        case 'hold':
-          navigator.vibrate(30); // Short pulse
+        case 'hold-inhale':
+          frequency = 659; // E5 - high hold
           break;
         case 'exhale':
-          navigator.vibrate([100, 30, 50]); // Falling pattern
+          frequency = 392; // G4 - falling
+          break;
+        case 'hold-exhale':
+          frequency = 349; // F4 - low hold
           break;
       }
+      
+      oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.2);
+    } catch (error) {
+      console.log('Audio context not available');
+    }
+  }, []);
+
+  const triggerHapticFeedback = useCallback((pattern: 'inhale' | 'hold' | 'exhale') => {
+    const hapticEnabled = localStorage.getItem('sereneflow-haptic') !== 'false';
+    if (!hapticEnabled || !('vibrate' in navigator)) return;
+
+    try {
+      switch (pattern) {
+        case 'inhale':
+          navigator.vibrate([100, 50, 100]); // Rising pattern
+          break;
+        case 'hold':
+          navigator.vibrate(50); // Short pulse
+          break;
+        case 'exhale':
+          navigator.vibrate([150, 30, 100]); // Falling pattern
+          break;
+      }
+    } catch (error) {
+      console.log('Vibration not available');
     }
   }, []);
 
@@ -77,21 +125,24 @@ const Session = () => {
 
     setCurrentPhase(nextPhase);
 
-    // Trigger haptic feedback
+    // Trigger feedback
     if (nextPhase === 'inhale') {
       triggerHapticFeedback('inhale');
+      playPhaseSound('inhale');
       if (currentIndex === 3) { // Completed a full cycle
         setCurrentCycle(prev => prev + 1);
       }
     } else if (nextPhase === 'exhale') {
       triggerHapticFeedback('exhale');
+      playPhaseSound('exhale');
     } else {
       triggerHapticFeedback('hold');
+      playPhaseSound(nextPhase);
     }
 
     const timings = getPhaseTimings();
     setPhaseTimeRemaining(timings[nextPhase]);
-  }, [currentPhase, triggerHapticFeedback, getPhaseTimings]);
+  }, [currentPhase, triggerHapticFeedback, playPhaseSound, getPhaseTimings]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -127,6 +178,7 @@ const Session = () => {
     const timings = getPhaseTimings();
     setPhaseTimeRemaining(timings.inhale);
     triggerHapticFeedback('inhale');
+    playPhaseSound('inhale');
   };
 
   const handlePause = () => {
@@ -149,7 +201,7 @@ const Session = () => {
     const sessions = JSON.parse(localStorage.getItem('sereneflow-sessions') || '[]');
     const newSession = {
       id: Date.now(),
-      technique: technique?.name,
+      technique: customConfig?.name || technique?.name,
       duration: Math.floor(sessionTime / 1000),
       cycles: currentCycle,
       date: new Date().toISOString(),
@@ -196,16 +248,20 @@ const Session = () => {
     setShowCustomConfig(false);
   };
 
-  if (!technique) {
+  if (!technique && !customConfig) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
         <div className="text-center">
-          <h1 className="text-2xl font-semibold mb-4">Technique not found</h1>
-          <Button onClick={() => navigate('/')}>Go Home</Button>
+          <h1 className="text-2xl font-bold mb-4 text-slate-900 dark:text-white">Technique not found</h1>
+          <Button onClick={() => navigate('/')} className="bg-serene-teal hover:bg-serene-teal/90 text-white font-semibold">
+            Go Home
+          </Button>
         </div>
       </div>
     );
   }
+
+  const displayName = customConfig?.name || technique?.name || 'Custom Breathing';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
@@ -216,38 +272,38 @@ const Session = () => {
             variant="ghost"
             size="sm"
             onClick={() => navigate(-1)}
-            className="p-2"
+            className="p-3 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl shadow-md"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-5 w-5 text-slate-700 dark:text-slate-200" />
           </Button>
           
-          <div className="text-center flex-1">
-            <h1 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
-              {technique.name}
+          <div className="text-center flex-1 mx-4">
+            <h1 className="text-xl font-bold text-slate-900 dark:text-white">
+              {displayName}
             </h1>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
+            <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">
               {isActive ? `Cycle ${currentCycle + 1} of ${totalCycles}` : 'Ready to start'}
             </p>
           </div>
 
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="ghost" size="sm" className="p-2">
-                <SettingsIcon className="h-5 w-5" />
+              <Button variant="ghost" size="sm" className="p-3 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl shadow-md">
+                <SettingsIcon className="h-5 w-5 text-slate-700 dark:text-slate-200" />
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-sm">
+            <DialogContent className="max-w-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
               <DialogHeader>
-                <DialogTitle>Session Settings</DialogTitle>
+                <DialogTitle className="text-slate-900 dark:text-white">Session Settings</DialogTitle>
               </DialogHeader>
               <Tabs defaultValue="settings" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="settings">Settings</TabsTrigger>
-                  <TabsTrigger value="custom">Custom</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-2 bg-slate-100 dark:bg-slate-700">
+                  <TabsTrigger value="settings" className="text-slate-700 dark:text-slate-200">Settings</TabsTrigger>
+                  <TabsTrigger value="custom" className="text-slate-700 dark:text-slate-200">Custom</TabsTrigger>
                 </TabsList>
                 <TabsContent value="settings" className="space-y-4">
                   <div>
-                    <Label>Total Cycles: {totalCycles}</Label>
+                    <Label className="text-slate-700 dark:text-slate-200">Total Cycles: {totalCycles}</Label>
                     <Slider
                       value={[totalCycles]}
                       onValueChange={(value) => setTotalCycles(value[0])}
@@ -257,10 +313,10 @@ const Session = () => {
                       className="mt-2"
                     />
                   </div>
-                  {technique.customizable && (
+                  {(technique?.customizable || customConfig) && (
                     <>
                       <div>
-                        <Label>Inhale: {inhaleTime}s</Label>
+                        <Label className="text-slate-700 dark:text-slate-200">Inhale: {inhaleTime}s</Label>
                         <Slider
                           value={[inhaleTime]}
                           onValueChange={(value) => setInhaleTime(value[0])}
@@ -271,7 +327,7 @@ const Session = () => {
                         />
                       </div>
                       <div>
-                        <Label>Hold (after inhale): {holdInhaleTime}s</Label>
+                        <Label className="text-slate-700 dark:text-slate-200">Hold (after inhale): {holdInhaleTime}s</Label>
                         <Slider
                           value={[holdInhaleTime]}
                           onValueChange={(value) => setHoldInhaleTime(value[0])}
@@ -282,7 +338,7 @@ const Session = () => {
                         />
                       </div>
                       <div>
-                        <Label>Exhale: {exhaleTime}s</Label>
+                        <Label className="text-slate-700 dark:text-slate-200">Exhale: {exhaleTime}s</Label>
                         <Slider
                           value={[exhaleTime]}
                           onValueChange={(value) => setExhaleTime(value[0])}
@@ -293,7 +349,7 @@ const Session = () => {
                         />
                       </div>
                       <div>
-                        <Label>Hold (after exhale): {holdExhaleTime}s</Label>
+                        <Label className="text-slate-700 dark:text-slate-200">Hold (after exhale): {holdExhaleTime}s</Label>
                         <Slider
                           value={[holdExhaleTime]}
                           onValueChange={(value) => setHoldExhaleTime(value[0])}
@@ -308,16 +364,16 @@ const Session = () => {
                 </TabsContent>
                 <TabsContent value="custom" className="space-y-4">
                   <div>
-                    <Label>Pattern Name</Label>
+                    <Label className="text-slate-700 dark:text-slate-200">Pattern Name</Label>
                     <Input
                       value={customName}
                       onChange={(e) => setCustomName(e.target.value)}
                       placeholder="My Custom Pattern"
-                      className="mt-2"
+                      className="mt-2 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100"
                     />
                   </div>
                   <div>
-                    <Label>Inhale: {inhaleTime}s</Label>
+                    <Label className="text-slate-700 dark:text-slate-200">Inhale: {inhaleTime}s</Label>
                     <Slider
                       value={[inhaleTime]}
                       onValueChange={(value) => setInhaleTime(value[0])}
@@ -328,7 +384,7 @@ const Session = () => {
                     />
                   </div>
                   <div>
-                    <Label>Hold (after inhale): {holdInhaleTime}s</Label>
+                    <Label className="text-slate-700 dark:text-slate-200">Hold (after inhale): {holdInhaleTime}s</Label>
                     <Slider
                       value={[holdInhaleTime]}
                       onValueChange={(value) => setHoldInhaleTime(value[0])}
@@ -339,7 +395,7 @@ const Session = () => {
                     />
                   </div>
                   <div>
-                    <Label>Exhale: {exhaleTime}s</Label>
+                    <Label className="text-slate-700 dark:text-slate-200">Exhale: {exhaleTime}s</Label>
                     <Slider
                       value={[exhaleTime]}
                       onValueChange={(value) => setExhaleTime(value[0])}
@@ -350,7 +406,7 @@ const Session = () => {
                     />
                   </div>
                   <div>
-                    <Label>Hold (after exhale): {holdExhaleTime}s</Label>
+                    <Label className="text-slate-700 dark:text-slate-200">Hold (after exhale): {holdExhaleTime}s</Label>
                     <Slider
                       value={[holdExhaleTime]}
                       onValueChange={(value) => setHoldExhaleTime(value[0])}
@@ -360,7 +416,7 @@ const Session = () => {
                       className="mt-2"
                     />
                   </div>
-                  <Button onClick={saveCustomPattern} className="w-full">
+                  <Button onClick={saveCustomPattern} className="w-full bg-serene-teal hover:bg-serene-teal/90 text-white font-semibold">
                     <Plus className="h-4 w-4 mr-2" />
                     Save Custom Pattern
                   </Button>
@@ -371,20 +427,20 @@ const Session = () => {
         </div>
 
         {/* Session Stats */}
-        <Card className="mb-6 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-lg">
+        <Card className="mb-6 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg">
           <CardContent className="p-4">
             <div className="flex justify-between items-center text-center">
               <div>
-                <p className="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+                <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {formatTime(sessionTime)}
                 </p>
-                <p className="text-sm text-slate-600 dark:text-slate-400">Duration</p>
+                <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">Duration</p>
               </div>
               <div>
-                <p className="text-2xl font-semibold text-slate-800 dark:text-slate-200">
+                <p className="text-2xl font-bold text-slate-900 dark:text-white">
                   {Math.ceil(phaseTimeRemaining / 1000)}
                 </p>
-                <p className="text-sm text-slate-600 dark:text-slate-400">Phase Time</p>
+                <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">Phase Time</p>
               </div>
             </div>
           </CardContent>
@@ -404,7 +460,7 @@ const Session = () => {
           {!isActive ? (
             <Button
               onClick={handleStart}
-              className="bg-serene-teal hover:bg-serene-teal/90 text-white px-8 py-3 rounded-xl"
+              className="bg-serene-teal hover:bg-serene-teal/90 text-white font-bold px-8 py-4 rounded-xl shadow-lg"
             >
               <Play className="h-5 w-5 mr-2" />
               Start
@@ -414,14 +470,14 @@ const Session = () => {
               <Button
                 onClick={handlePause}
                 variant="outline"
-                className="border-serene-teal text-serene-teal px-6 py-3 rounded-xl"
+                className="border-2 border-serene-teal text-serene-teal hover:bg-serene-teal hover:text-white font-bold px-6 py-4 rounded-xl shadow-lg bg-white dark:bg-slate-800"
               >
                 {isPaused ? <Play className="h-5 w-5" /> : <Pause className="h-5 w-5" />}
               </Button>
               <Button
                 onClick={handleStop}
                 variant="outline"
-                className="border-red-400 text-red-600 px-6 py-3 rounded-xl"
+                className="border-2 border-red-400 text-red-600 hover:bg-red-500 hover:text-white font-bold px-6 py-4 rounded-xl shadow-lg bg-white dark:bg-slate-800"
               >
                 <Square className="h-5 w-5" />
               </Button>

@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Moon, Sun, Smartphone, Bell, BookOpen, Info, Trash2 } from "lucide-react";
+import { Moon, Sun, Smartphone, Bell, BookOpen, Info, Trash2, Volume2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -12,12 +12,14 @@ import { toast } from "sonner";
 const Settings = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [hapticFeedback, setHapticFeedback] = useState(true);
+  const [soundFeedback, setSoundFeedback] = useState(false);
   const [notifications, setNotifications] = useState(false);
 
   useEffect(() => {
     // Load settings from localStorage
     const savedTheme = localStorage.getItem('sereneflow-theme');
     const savedHaptic = localStorage.getItem('sereneflow-haptic');
+    const savedSound = localStorage.getItem('sereneflow-sound');
     const savedNotifications = localStorage.getItem('sereneflow-notifications');
 
     if (savedTheme === 'dark') {
@@ -28,6 +30,7 @@ const Settings = () => {
     }
 
     if (savedHaptic === 'false') setHapticFeedback(false);
+    if (savedSound === 'true') setSoundFeedback(true);
     if (savedNotifications === 'true') setNotifications(true);
   }, []);
 
@@ -47,23 +50,61 @@ const Settings = () => {
     localStorage.setItem('sereneflow-haptic', checked.toString());
     
     if (checked && 'vibrate' in navigator) {
-      navigator.vibrate(50); // Test vibration
+      try {
+        navigator.vibrate(100);
+      } catch (error) {
+        console.log('Vibration not available');
+      }
+    }
+  };
+
+  const handleSoundChange = (checked: boolean) => {
+    setSoundFeedback(checked);
+    localStorage.setItem('sereneflow-sound', checked.toString());
+    
+    if (checked) {
+      try {
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(523, audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.2);
+      } catch (error) {
+        console.log('Audio context not available');
+      }
     }
   };
 
   const handleNotificationChange = async (checked: boolean) => {
     if (checked) {
       if ('Notification' in window) {
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-          setNotifications(true);
-          localStorage.setItem('sereneflow-notifications', 'true');
-          toast.success('Notifications enabled');
-        } else {
-          toast.error('Notification permission denied');
+        try {
+          const permission = await Notification.requestPermission();
+          if (permission === 'granted') {
+            setNotifications(true);
+            localStorage.setItem('sereneflow-notifications', 'true');
+            toast.success('Notifications enabled');
+            
+            // Test notification
+            new Notification('SereneFlow', {
+              body: 'Notifications are now enabled for your breathing reminders!',
+              icon: '/favicon.ico'
+            });
+          } else {
+            toast.error('Notification permission denied');
+          }
+        } catch (error) {
+          toast.error('Notification setup failed');
         }
       } else {
-        toast.error('Notifications not supported');
+        toast.error('Notifications not supported on this device');
       }
     } else {
       setNotifications(false);
@@ -78,6 +119,7 @@ const Settings = () => {
       localStorage.removeItem('sereneflow-sessions');
       localStorage.removeItem('sereneflow-streak');
       localStorage.removeItem('sereneflow-total-sessions');
+      localStorage.removeItem('sereneflow-custom-patterns');
       toast.success('All data cleared');
     }
   };
@@ -86,11 +128,13 @@ const Settings = () => {
     const sessions = localStorage.getItem('sereneflow-sessions') || '[]';
     const streak = localStorage.getItem('sereneflow-streak') || '0';
     const totalSessions = localStorage.getItem('sereneflow-total-sessions') || '0';
+    const customPatterns = localStorage.getItem('sereneflow-custom-patterns') || '[]';
     
     const data = {
       sessions: JSON.parse(sessions),
       streak: parseInt(streak),
       totalSessions: parseInt(totalSessions),
+      customPatterns: JSON.parse(customPatterns),
       exportDate: new Date().toISOString(),
     };
 
@@ -110,25 +154,25 @@ const Settings = () => {
       <div className="container mx-auto px-4 py-8 max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-light text-slate-800 dark:text-slate-200 mb-2">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
             Settings
           </h1>
-          <p className="text-slate-600 dark:text-slate-400">
+          <p className="text-slate-600 dark:text-slate-300 font-medium">
             Customize your experience
           </p>
         </div>
 
         {/* Appearance */}
-        <Card className="mb-6 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-lg">
+        <Card className="mb-6 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg">
           <CardHeader>
-            <CardTitle className="text-lg flex items-center text-slate-800 dark:text-slate-200">
+            <CardTitle className="text-lg flex items-center text-slate-900 dark:text-white">
               {darkMode ? <Moon className="h-5 w-5 mr-2" /> : <Sun className="h-5 w-5 mr-2" />}
               Appearance
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
             <div className="flex items-center justify-between">
-              <Label htmlFor="dark-mode" className="text-slate-700 dark:text-slate-300">
+              <Label htmlFor="dark-mode" className="text-slate-700 dark:text-slate-200 font-medium">
                 Dark Mode
               </Label>
               <Switch
@@ -141,17 +185,17 @@ const Settings = () => {
         </Card>
 
         {/* Experience */}
-        <Card className="mb-6 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-lg">
+        <Card className="mb-6 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg">
           <CardHeader>
-            <CardTitle className="text-lg flex items-center text-slate-800 dark:text-slate-200">
+            <CardTitle className="text-lg flex items-center text-slate-900 dark:text-white">
               <Smartphone className="h-5 w-5 mr-2" />
-              Experience
+              Feedback
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0 space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <Label htmlFor="haptic" className="text-slate-700 dark:text-slate-300">
+                <Label htmlFor="haptic" className="text-slate-700 dark:text-slate-200 font-medium">
                   Haptic Feedback
                 </Label>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -167,7 +211,25 @@ const Settings = () => {
 
             <div className="flex items-center justify-between">
               <div>
-                <Label htmlFor="notifications" className="text-slate-700 dark:text-slate-300">
+                <Label htmlFor="sound" className="text-slate-700 dark:text-slate-200 font-medium flex items-center">
+                  <Volume2 className="h-4 w-4 mr-1" />
+                  Sound Feedback
+                </Label>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Audio cues for breathing phases
+                </p>
+              </div>
+              <Switch
+                id="sound"
+                checked={soundFeedback}
+                onCheckedChange={handleSoundChange}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div>
+                <Label htmlFor="notifications" className="text-slate-700 dark:text-slate-200 font-medium flex items-center">
+                  <Bell className="h-4 w-4 mr-1" />
                   Notifications
                 </Label>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -184,9 +246,9 @@ const Settings = () => {
         </Card>
 
         {/* Learning */}
-        <Card className="mb-6 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-lg">
+        <Card className="mb-6 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg">
           <CardHeader>
-            <CardTitle className="text-lg flex items-center text-slate-800 dark:text-slate-200">
+            <CardTitle className="text-lg flex items-center text-slate-900 dark:text-white">
               <BookOpen className="h-5 w-5 mr-2" />
               Learning
             </CardTitle>
@@ -194,7 +256,7 @@ const Settings = () => {
           <CardContent className="p-4 pt-0">
             <Button
               variant="ghost"
-              className="w-full justify-start text-slate-700 dark:text-slate-300"
+              className="w-full justify-start text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 font-medium"
               onClick={() => window.open('/learn', '_blank')}
             >
               <BookOpen className="h-4 w-4 mr-2" />
@@ -204,9 +266,9 @@ const Settings = () => {
         </Card>
 
         {/* Data Management */}
-        <Card className="mb-6 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-lg">
+        <Card className="mb-6 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg">
           <CardHeader>
-            <CardTitle className="text-lg flex items-center text-slate-800 dark:text-slate-200">
+            <CardTitle className="text-lg flex items-center text-slate-900 dark:text-white">
               <Info className="h-5 w-5 mr-2" />
               Data Management
             </CardTitle>
@@ -214,7 +276,7 @@ const Settings = () => {
           <CardContent className="p-4 pt-0 space-y-3">
             <Button
               variant="outline"
-              className="w-full justify-start border-serene-teal text-serene-teal"
+              className="w-full justify-start border-2 border-serene-teal text-serene-teal hover:bg-serene-teal hover:text-white font-semibold"
               onClick={exportData}
             >
               Export My Data
@@ -222,7 +284,7 @@ const Settings = () => {
             
             <Button
               variant="outline"
-              className="w-full justify-start border-red-300 text-red-600 hover:bg-red-50"
+              className="w-full justify-start border-2 border-red-300 text-red-600 hover:bg-red-500 hover:text-white font-semibold"
               onClick={clearAllData}
             >
               <Trash2 className="h-4 w-4 mr-2" />
@@ -232,13 +294,13 @@ const Settings = () => {
         </Card>
 
         {/* About */}
-        <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-0 shadow-lg">
+        <Card className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg">
           <CardContent className="p-6">
             <div className="text-center">
-              <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-2">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
                 SereneFlow
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+              <p className="text-sm text-slate-600 dark:text-slate-300 mb-4 font-medium">
                 Version 1.0.0
               </p>
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
@@ -250,9 +312,9 @@ const Settings = () => {
         </Card>
 
         {/* Safety Note */}
-        <Alert className="mt-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
+        <Alert className="mt-6 bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800">
           <Info className="h-4 w-4" />
-          <AlertDescription className="text-amber-800 dark:text-amber-200">
+          <AlertDescription className="text-amber-800 dark:text-amber-200 font-medium">
             Always practice breathing exercises in a safe environment. Stop if you feel dizzy or uncomfortable.
           </AlertDescription>
         </Alert>

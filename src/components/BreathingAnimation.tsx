@@ -50,15 +50,15 @@ const BreathingAnimation = ({ phase, duration, isActive }: BreathingAnimationPro
   const getPhaseColor = () => {
     switch (phase) {
       case 'inhale':
-        return 'from-blue-400 to-cyan-300';
+        return 'from-blue-500 to-cyan-400';
       case 'hold-inhale':
-        return 'from-cyan-300 to-teal-300';
+        return 'from-cyan-400 to-teal-400';
       case 'exhale':
-        return 'from-teal-300 to-green-300';
+        return 'from-teal-400 to-green-400';
       case 'hold-exhale':
-        return 'from-green-300 to-blue-400';
+        return 'from-green-400 to-blue-500';
       default:
-        return 'from-blue-400 to-cyan-300';
+        return 'from-blue-500 to-cyan-400';
     }
   };
 
@@ -81,7 +81,7 @@ const BreathingAnimation = ({ phase, duration, isActive }: BreathingAnimationPro
     <div className="flex flex-col items-center justify-center h-full">
       <div className="relative mb-8">
         {/* Outer ring */}
-        <div className="w-80 h-80 rounded-full border-2 border-gray-200 dark:border-gray-700 opacity-30"></div>
+        <div className="w-80 h-80 rounded-full border-2 border-slate-300 dark:border-slate-600 opacity-40"></div>
         
         {/* Breathing circle */}
         <div
@@ -93,19 +93,19 @@ const BreathingAnimation = ({ phase, duration, isActive }: BreathingAnimationPro
           }}
         >
           {/* Inner glow effect */}
-          <div className="absolute inset-2 rounded-full bg-white/20 backdrop-blur-sm"></div>
+          <div className="absolute inset-2 rounded-full bg-white/30 backdrop-blur-sm"></div>
         </div>
 
         {/* Center dot */}
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg opacity-80"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg opacity-90"></div>
       </div>
 
       {/* Phase indicator */}
       <div className="text-center">
-        <h2 className="text-2xl font-light text-slate-700 dark:text-slate-300 mb-2">
+        <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">
           {getPhaseText()}
         </h2>
-        <div className="text-lg text-slate-500 dark:text-slate-400">
+        <div className="text-lg text-slate-600 dark:text-slate-300 font-semibold">
           {Math.ceil(duration / 1000)}s
         </div>
       </div>
