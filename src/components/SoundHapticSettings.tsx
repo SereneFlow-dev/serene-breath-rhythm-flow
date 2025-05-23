@@ -155,7 +155,7 @@ const SoundHapticSettings = () => {
                 onClick={previewSound}
                 variant="outline"
                 size="sm"
-                className="w-full border border-emerald-300 text-emerald-700 hover:bg-emerald-50 dark:border-emerald-600 dark:text-emerald-200 dark:hover:bg-emerald-900/30 font-medium"
+                className="w-full border-2 border-indigo-300 text-indigo-700 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-200 dark:hover:bg-indigo-900/30 font-medium"
               >
                 <Play className="h-4 w-4 mr-2" />
                 Preview Sound
@@ -202,7 +202,7 @@ const SoundHapticSettings = () => {
                 onClick={testHaptic}
                 variant="outline"
                 size="sm"
-                className="w-full border border-violet-300 text-violet-700 hover:bg-violet-50 dark:border-violet-600 dark:text-violet-200 dark:hover:bg-violet-900/30 font-medium"
+                className="w-full border-2 border-indigo-300 text-indigo-700 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-200 dark:hover:bg-indigo-900/30 font-medium"
               >
                 <TestTube className="h-4 w-4 mr-2" />
                 Test Haptic
