@@ -89,7 +89,7 @@ const HapticSettings = () => {
             </Select>
           </div>
           
-          <Button onClick={testHaptic} variant="outline" size="sm" className="w-full border-2 border-indigo-300 dark:border-indigo-600 text-indigo-500 font-medium text-sm bg-slate-500 hover:bg-slate-400">
+          <Button onClick={testHaptic} variant="outline" size="sm" className="w-full border-2 border-indigo-300 dark:border-indigo-600 font-medium text-sm bg-slate-500 hover:bg-slate-400 text-slate-950">
             <TestTube className="h-4 w-4 mr-2" />
             Test Haptic
           </Button>
