@@ -1,22 +1,14 @@
 
 import { useState, useEffect } from "react";
-import { ArrowRight, Brain, Gamepad2, Heart, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navigation from "@/components/Navigation";
 import BreathingAnimation from "@/components/BreathingAnimation";
 import CustomBreathingConfig from "@/components/CustomBreathingConfig";
-import GuidedMeditation from "@/components/GuidedMeditation";
-import BreathingGames from "@/components/BreathingGames";
-import StressTracking from "@/components/StressTracking";
-import AIRecommendations from "@/components/AIRecommendations";
 import { breathingTechniques } from "@/data/breathingTechniques";
-import { advancedBreathingTechniques } from "@/data/advancedBreathingTechniques";
-import { toast } from "sonner";
 
 const Index = () => {
   const [totalSessions, setTotalSessions] = useState(0);
@@ -84,100 +76,6 @@ const Index = () => {
               <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">Day Streak</p>
             </CardContent>
           </Card>
-        </div>
-
-        {/* Advanced Features */}
-        <div className="grid grid-cols-2 gap-4 mb-8">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Card className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all cursor-pointer">
-                <CardContent className="p-4 text-center">
-                  <Brain className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-                  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">AI Coach</p>
-                </CardContent>
-              </Card>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>AI Recommendations</DialogTitle>
-              </DialogHeader>
-              <AIRecommendations />
-            </DialogContent>
-          </Dialog>
-
-          <Dialog>
-            <DialogTrigger asChild>
-              <Card className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all cursor-pointer">
-                <CardContent className="p-4 text-center">
-                  <Gamepad2 className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Games</p>
-                </CardContent>
-              </Card>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Breathing Games</DialogTitle>
-              </DialogHeader>
-              <BreathingGames />
-            </DialogContent>
-          </Dialog>
-
-          <Dialog>
-            <DialogTrigger asChild>
-              <Card className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all cursor-pointer">
-                <CardContent className="p-4 text-center">
-                  <Heart className="h-8 w-8 text-red-600 mx-auto mb-2" />
-                  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Stress Track</p>
-                </CardContent>
-              </Card>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Stress Tracking</DialogTitle>
-              </DialogHeader>
-              <StressTracking />
-            </DialogContent>
-          </Dialog>
-
-          <Dialog>
-            <DialogTrigger asChild>
-              <Card className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all cursor-pointer">
-                <CardContent className="p-4 text-center">
-                  <Sparkles className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
-                  <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Guided</p>
-                </CardContent>
-              </Card>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Guided Meditations</DialogTitle>
-              </DialogHeader>
-              <Tabs defaultValue="basic" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="basic">Basic Techniques</TabsTrigger>
-                  <TabsTrigger value="advanced">Advanced</TabsTrigger>
-                </TabsList>
-                <TabsContent value="basic" className="space-y-4">
-                  {breathingTechniques.slice(0, 3).map((technique) => (
-                    <GuidedMeditation
-                      key={technique.id}
-                      technique={technique}
-                      onComplete={() => toast.success("Meditation completed!")}
-                    />
-                  ))}
-                </TabsContent>
-                <TabsContent value="advanced" className="space-y-4">
-                  {advancedBreathingTechniques.map((technique) => (
-                    <GuidedMeditation
-                      key={technique.id}
-                      technique={technique}
-                      onComplete={() => toast.success("Advanced session completed!")}
-                    />
-                  ))}
-                </TabsContent>
-              </Tabs>
-            </DialogContent>
-          </Dialog>
         </div>
 
         {/* Custom Breathing Pattern */}
