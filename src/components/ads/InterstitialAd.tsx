@@ -1,6 +1,6 @@
 
 import { useEffect } from 'react';
-import { AdMob } from '@capacitor-community/admob';
+import { AdMob, InterstitialAdOptions } from '@capacitor-community/admob';
 
 interface InterstitialAdProps {
   adId?: string;
@@ -26,16 +26,17 @@ const InterstitialAd = ({
 
   const showInterstitialAd = async () => {
     try {
-      const options = {
+      const options: InterstitialAdOptions = {
         adId,
       };
 
       await AdMob.prepareInterstitial(options);
       await AdMob.showInterstitial();
       
-      // Listen for ad events using the correct event name
-      AdMob.addListener('onInterstitialAdDismissed', () => {
+      // Listen for ad events - use addListener with proper callback
+      const listener = await AdMob.addListener('interstitialAdDismissed', () => {
         onAdDismissed?.();
+        listener.remove(); // Clean up listener
       });
 
     } catch (error) {

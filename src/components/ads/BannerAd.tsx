@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import { AdMob } from '@capacitor-community/admob';
+import { AdMob, BannerAdOptions, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 
 interface BannerAdProps {
   adId?: string;
@@ -29,10 +29,12 @@ const BannerAd = ({
 
     const showBannerAd = async () => {
       try {
-        const options = {
+        const options: BannerAdOptions = {
           adId,
-          adSize: size,
-          position,
+          adSize: size === 'BANNER' ? BannerAdSize.BANNER : 
+                  size === 'LARGE_BANNER' ? BannerAdSize.LARGE_BANNER : 
+                  BannerAdSize.MEDIUM_RECTANGLE,
+          position: position === 'TOP_CENTER' ? BannerAdPosition.TOP_CENTER : BannerAdPosition.BOTTOM_CENTER,
         };
 
         await AdMob.showBanner(options);
