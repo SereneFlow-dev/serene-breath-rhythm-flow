@@ -68,21 +68,6 @@ const BreathingAnimation = ({
     setAnimationScale(targetScale);
   }, [currentPhase, isActive]);
 
-  const getPhaseColor = () => {
-    switch (currentPhase) {
-      case 'inhale':
-        return 'from-indigo-500 to-blue-400';
-      case 'hold-inhale':
-        return 'from-blue-400 to-cyan-400';
-      case 'exhale':
-        return 'from-cyan-400 to-teal-400';
-      case 'hold-exhale':
-        return 'from-teal-400 to-indigo-500';
-      default:
-        return 'from-indigo-500 to-blue-400';
-    }
-  };
-
   const getEasingFunction = () => {
     switch (currentPhase) {
       case 'inhale':
@@ -104,9 +89,9 @@ const BreathingAnimation = ({
         {/* Outer ring - smaller */}
         <div className="w-48 h-48 rounded-full border border-slate-300 dark:border-slate-600 opacity-30"></div>
         
-        {/* Breathing circle - smaller and more subtle */}
+        {/* Breathing circle - consistent gradient that looks good when scaling */}
         <div
-          className={`absolute inset-3 rounded-full bg-gradient-to-br ${getPhaseColor()} shadow-lg opacity-80`}
+          className="absolute inset-3 rounded-full bg-gradient-to-br from-indigo-500 via-blue-400 to-cyan-400 shadow-lg opacity-80"
           style={{
             transform: `scale(${animationScale})`,
             transition: isActive ? `transform 3000ms ${getEasingFunction()}` : 'transform 500ms ease-in-out'
