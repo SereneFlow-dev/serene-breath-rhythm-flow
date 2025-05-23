@@ -5,7 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { triggerHapticPattern } from "@/utils/audioUtils";
+import { triggerHapticPattern, hapticPatterns } from "@/utils/audioUtils";
 import type { HapticPattern } from "@/utils/audioUtils";
 
 const HapticSettings = () => {
@@ -59,13 +59,13 @@ const HapticSettings = () => {
     }
   };
 
-  const hapticOptions = [
-    { value: 'gentle', label: 'Gentle' },
-    { value: 'medium', label: 'Medium' },
-    { value: 'strong', label: 'Strong' },
-    { value: 'subtle', label: 'Subtle' },
-    { value: 'rhythmic', label: 'Rhythmic' }
-  ];
+  // Use the actual haptic patterns from audioUtils
+  const hapticOptions = Object.entries(hapticPatterns)
+    .filter(([key]) => key !== 'off')
+    .map(([key, config]) => ({
+      value: key as HapticPattern,
+      label: config.name
+    }));
 
   return (
     <div className="space-y-4">

@@ -5,7 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { createSoothingSound } from "@/utils/audioUtils";
+import { createSoothingSound, soundConfigs } from "@/utils/audioUtils";
 import type { SoundType } from "@/utils/audioUtils";
 
 const SoundSettings = () => {
@@ -40,13 +40,13 @@ const SoundSettings = () => {
     }
   };
 
-  const soundOptions = [
-    { value: 'gentle-bells', label: 'Gentle Bells' },
-    { value: 'ocean-waves', label: 'Ocean Waves' },
-    { value: 'forest-rain', label: 'Forest Rain' },
-    { value: 'singing-bowl', label: 'Singing Bowl' },
-    { value: 'wind-chimes', label: 'Wind Chimes' }
-  ];
+  // Use the actual sound types from audioUtils
+  const soundOptions = Object.entries(soundConfigs)
+    .filter(([key]) => key !== 'silent')
+    .map(([key, config]) => ({
+      value: key as SoundType,
+      label: config.name
+    }));
 
   return (
     <div className="space-y-4">
