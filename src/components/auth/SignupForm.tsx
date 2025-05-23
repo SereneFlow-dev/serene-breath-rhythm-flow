@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import OTPVerification from "./OTPVerification";
@@ -15,13 +14,11 @@ interface SignupFormProps {
 
 const SignupForm = ({ onUserChange, onSwitchToLogin }: SignupFormProps) => {
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showOTPVerification, setShowOTPVerification] = useState(false);
-  const [signupMethod, setSignupMethod] = useState<'email' | 'phone'>('email');
 
   const handleSignUp = async () => {
     if (!fullName.trim()) {
@@ -39,47 +36,31 @@ const SignupForm = ({ onUserChange, onSwitchToLogin }: SignupFormProps) => {
       return;
     }
 
-    const identifier = signupMethod === 'email' ? email : phone;
-    if (!identifier) {
-      toast.error(`Please enter your ${signupMethod}`);
+    if (!email) {
+      toast.error("Please enter your email");
       return;
     }
 
     setIsLoading(true);
     try {
-      let result;
-      
-      if (signupMethod === 'email') {
-        result = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: {
-              full_name: fullName,
-              phone: phone || null
-            }
+      const result = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName
           }
-        });
-      } else {
-        result = await supabase.auth.signUp({
-          phone,
-          password,
-          options: {
-            data: {
-              full_name: fullName
-            }
-          }
-        });
-      }
+        }
+      });
 
       if (result.error) {
         throw result.error;
       }
 
       if (result.data.user && !result.data.session) {
-        // Email/Phone verification required
+        // Email verification required
         setShowOTPVerification(true);
-        toast.success("OTP sent! Please check your " + signupMethod);
+        toast.success("OTP sent! Please check your email");
       } else if (result.data.user && result.data.session) {
         // Auto-confirmed (shouldn't happen with email verification enabled)
         onUserChange(result.data.user);
@@ -95,8 +76,7 @@ const SignupForm = ({ onUserChange, onSwitchToLogin }: SignupFormProps) => {
   if (showOTPVerification) {
     return (
       <OTPVerification
-        email={signupMethod === 'email' ? email : undefined}
-        phone={signupMethod === 'phone' ? phone : undefined}
+        email={email}
         onVerified={onUserChange}
         onBack={() => setShowOTPVerification(false)}
         password={password}
@@ -118,50 +98,16 @@ const SignupForm = ({ onUserChange, onSwitchToLogin }: SignupFormProps) => {
         />
       </div>
 
-      <Tabs value={signupMethod} onValueChange={(value) => setSignupMethod(value as 'email' | 'phone')}>
-        <TabsList className="grid w-full grid-cols-2 mb-4">
-          <TabsTrigger value="email">Email</TabsTrigger>
-          <TabsTrigger value="phone">Phone</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="email" className="space-y-4">
-          <div>
-            <Label className="text-slate-800 dark:text-slate-200 font-medium">Email</Label>
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              className="mt-2 bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600"
-            />
-          </div>
-          {signupMethod === 'email' && (
-            <div>
-              <Label className="text-slate-800 dark:text-slate-200 font-medium">Phone (Optional)</Label>
-              <Input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+1 (555) 123-4567"
-                className="mt-2 bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600"
-              />
-            </div>
-          )}
-        </TabsContent>
-        
-        <TabsContent value="phone" className="space-y-4">
-          <div>
-            <Label className="text-slate-800 dark:text-slate-200 font-medium">Phone Number</Label>
-            <Input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="+1 (555) 123-4567"
-              className="mt-2 bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600"
-            />
-          </div>
-        </TabsContent>
-      </Tabs>
+      <div>
+        <Label className="text-slate-800 dark:text-slate-200 font-medium">Email</Label>
+        <Input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="your@email.com"
+          className="mt-2 bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600"
+        />
+      </div>
 
       <div>
         <Label className="text-slate-800 dark:text-slate-200 font-medium">Password</Label>

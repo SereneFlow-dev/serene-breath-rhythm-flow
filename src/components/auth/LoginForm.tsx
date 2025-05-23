@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import OTPLogin from "./OTPLogin";
@@ -15,25 +14,19 @@ interface LoginFormProps {
 
 const LoginForm = ({ onUserChange, onSwitchToSignup }: LoginFormProps) => {
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showOTPLogin, setShowOTPLogin] = useState(false);
-  const [loginMethod, setLoginMethod] = useState<'email' | 'phone'>('email');
 
   const handlePasswordLogin = async () => {
-    const identifier = loginMethod === 'email' ? email : phone;
-    
-    if (!identifier || !password) {
+    if (!email || !password) {
       toast.error("Please fill in all fields");
       return;
     }
 
     setIsLoading(true);
     try {
-      const result = loginMethod === 'email' 
-        ? await supabase.auth.signInWithPassword({ email, password })
-        : await supabase.auth.signInWithPassword({ phone, password });
+      const result = await supabase.auth.signInWithPassword({ email, password });
 
       if (result.error) {
         throw result.error;
@@ -51,9 +44,8 @@ const LoginForm = ({ onUserChange, onSwitchToSignup }: LoginFormProps) => {
   };
 
   const handleOTPLogin = () => {
-    const identifier = loginMethod === 'email' ? email : phone;
-    if (!identifier) {
-      toast.error(`Please enter your ${loginMethod}`);
+    if (!email) {
+      toast.error("Please enter your email");
       return;
     }
     setShowOTPLogin(true);
@@ -62,8 +54,7 @@ const LoginForm = ({ onUserChange, onSwitchToSignup }: LoginFormProps) => {
   if (showOTPLogin) {
     return (
       <OTPLogin
-        email={loginMethod === 'email' ? email : undefined}
-        phone={loginMethod === 'phone' ? phone : undefined}
+        email={email}
         onVerified={onUserChange}
         onBack={() => setShowOTPLogin(false)}
       />
@@ -72,38 +63,16 @@ const LoginForm = ({ onUserChange, onSwitchToSignup }: LoginFormProps) => {
 
   return (
     <div className="space-y-4">
-      <Tabs value={loginMethod} onValueChange={(value) => setLoginMethod(value as 'email' | 'phone')}>
-        <TabsList className="grid w-full grid-cols-2 mb-4">
-          <TabsTrigger value="email">Email</TabsTrigger>
-          <TabsTrigger value="phone">Phone</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="email" className="space-y-4">
-          <div>
-            <Label className="text-slate-800 dark:text-slate-200 font-medium">Email</Label>
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              className="mt-2 bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600"
-            />
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="phone" className="space-y-4">
-          <div>
-            <Label className="text-slate-800 dark:text-slate-200 font-medium">Phone Number</Label>
-            <Input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="+1 (555) 123-4567"
-              className="mt-2 bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600"
-            />
-          </div>
-        </TabsContent>
-      </Tabs>
+      <div>
+        <Label className="text-slate-800 dark:text-slate-200 font-medium">Email</Label>
+        <Input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="your@email.com"
+          className="mt-2 bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600"
+        />
+      </div>
 
       <div>
         <Label className="text-slate-800 dark:text-slate-200 font-medium">Password</Label>

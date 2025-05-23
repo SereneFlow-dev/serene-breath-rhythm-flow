@@ -7,13 +7,12 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 interface OTPLoginProps {
-  email?: string;
-  phone?: string;
+  email: string;
   onVerified: (user: any) => void;
   onBack: () => void;
 }
 
-const OTPLogin = ({ email, phone, onVerified, onBack }: OTPLoginProps) => {
+const OTPLogin = ({ email, onVerified, onBack }: OTPLoginProps) => {
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [resendTimer, setResendTimer] = useState(60);
@@ -37,13 +36,7 @@ const OTPLogin = ({ email, phone, onVerified, onBack }: OTPLoginProps) => {
   const sendOTP = async () => {
     setIsLoading(true);
     try {
-      let result;
-      
-      if (email) {
-        result = await supabase.auth.signInWithOtp({ email });
-      } else if (phone) {
-        result = await supabase.auth.signInWithOtp({ phone });
-      }
+      const result = await supabase.auth.signInWithOtp({ email });
 
       if (result?.error) {
         throw result.error;
@@ -67,21 +60,11 @@ const OTPLogin = ({ email, phone, onVerified, onBack }: OTPLoginProps) => {
 
     setIsLoading(true);
     try {
-      let result;
-      
-      if (email) {
-        result = await supabase.auth.verifyOtp({
-          email,
-          token: otp,
-          type: 'email'
-        });
-      } else if (phone) {
-        result = await supabase.auth.verifyOtp({
-          phone,
-          token: otp,
-          type: 'sms'
-        });
-      }
+      const result = await supabase.auth.verifyOtp({
+        email,
+        token: otp,
+        type: 'email'
+      });
 
       if (result?.error) {
         throw result.error;
@@ -122,7 +105,7 @@ const OTPLogin = ({ email, phone, onVerified, onBack }: OTPLoginProps) => {
           Enter OTP
         </h3>
         <p className="text-sm text-slate-600 dark:text-slate-300">
-          We've sent a 6-digit code to {email || phone}
+          We've sent a 6-digit code to {email}
         </p>
       </div>
 
