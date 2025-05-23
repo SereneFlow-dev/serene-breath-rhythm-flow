@@ -83,7 +83,7 @@ const SoundSettings = () => {
             </Select>
           </div>
           
-          <Button onClick={previewSound} variant="outline" size="sm" className="w-full border-2 border-indigo-300 text-indigo-700 dark:border-indigo-600 dark:text-indigo-200 font-medium bg-slate-100">
+          <Button onClick={previewSound} variant="outline" size="sm" className="w-full border-2 border-indigo-300 dark:border-indigo-600 font-medium bg-slate-50 text-indigo-500">
             <Play className="h-4 w-4 mr-2" />
             Preview Sound
           </Button>

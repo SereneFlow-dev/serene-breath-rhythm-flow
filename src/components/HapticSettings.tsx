@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Smartphone, TestTube } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
@@ -8,23 +7,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { triggerHapticPattern } from "@/utils/audioUtils";
 import type { HapticPattern } from "@/utils/audioUtils";
 import { toast } from "sonner";
-
 const HapticSettings = () => {
   const [hapticEnabled, setHapticEnabled] = useState(true);
   const [hapticPattern, setHapticPattern] = useState<HapticPattern>('gentle');
-
   useEffect(() => {
     const savedHaptic = localStorage.getItem('sereneflow-haptic');
     const savedHapticPattern = localStorage.getItem('sereneflow-haptic-pattern') as HapticPattern;
-    
     if (savedHaptic !== null) setHapticEnabled(savedHaptic !== 'false');
     if (savedHapticPattern) setHapticPattern(savedHapticPattern);
   }, []);
-
   const handleHapticToggle = (checked: boolean) => {
     setHapticEnabled(checked);
     localStorage.setItem('sereneflow-haptic', checked.toString());
-    
     if (checked && 'vibrate' in navigator) {
       try {
         navigator.vibrate(100);
@@ -37,18 +31,15 @@ const HapticSettings = () => {
       toast.info("Haptic feedback disabled");
     }
   };
-
   const handleHapticPatternChange = (value: HapticPattern) => {
     setHapticPattern(value);
     localStorage.setItem('sereneflow-haptic-pattern', value);
   };
-
   const testHaptic = () => {
     if (!hapticEnabled) {
       toast.error("Please enable haptic feedback first");
       return;
     }
-    
     try {
       triggerHapticPattern(hapticPattern);
       toast.success("Haptic feedback triggered");
@@ -56,17 +47,23 @@ const HapticSettings = () => {
       toast.error("Could not trigger haptic feedback");
     }
   };
-
-  const hapticOptions = [
-    { value: 'gentle', label: 'Gentle' },
-    { value: 'medium', label: 'Medium' },
-    { value: 'strong', label: 'Strong' },
-    { value: 'subtle', label: 'Subtle' },
-    { value: 'rhythmic', label: 'Rhythmic' }
-  ];
-
-  return (
-    <div className="space-y-4">
+  const hapticOptions = [{
+    value: 'gentle',
+    label: 'Gentle'
+  }, {
+    value: 'medium',
+    label: 'Medium'
+  }, {
+    value: 'strong',
+    label: 'Strong'
+  }, {
+    value: 'subtle',
+    label: 'Subtle'
+  }, {
+    value: 'rhythmic',
+    label: 'Rhythmic'
+  }];
+  return <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Smartphone className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
@@ -74,15 +71,10 @@ const HapticSettings = () => {
             Haptic Feedback
           </Label>
         </div>
-        <Switch
-          id="haptic"
-          checked={hapticEnabled}
-          onCheckedChange={handleHapticToggle}
-        />
+        <Switch id="haptic" checked={hapticEnabled} onCheckedChange={handleHapticToggle} />
       </div>
       
-      {hapticEnabled && (
-        <div className="space-y-3 ml-6">
+      {hapticEnabled && <div className="space-y-3 ml-6">
           <div>
             <Label className="text-sm text-slate-800 dark:text-slate-200 font-medium">Haptic Pattern</Label>
             <Select value={hapticPattern} onValueChange={handleHapticPatternChange}>
@@ -90,28 +82,18 @@ const HapticSettings = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {hapticOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                {hapticOptions.map(option => <SelectItem key={option.value} value={option.value}>
                     {option.label}
-                  </SelectItem>
-                ))}
+                  </SelectItem>)}
               </SelectContent>
             </Select>
           </div>
           
-          <Button
-            onClick={testHaptic}
-            variant="outline"
-            size="sm"
-            className="w-full bg-white dark:bg-slate-700 border-2 border-indigo-300 text-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 dark:border-indigo-600 dark:text-indigo-200 font-medium"
-          >
+          <Button onClick={testHaptic} variant="outline" size="sm" className="w-full border-2 border-indigo-300 dark:border-indigo-600 font-medium bg-slate-50 text-indigo-500 text-base">
             <TestTube className="h-4 w-4 mr-2" />
             Test Haptic
           </Button>
-        </div>
-      )}
-    </div>
-  );
+        </div>}
+    </div>;
 };
-
 export default HapticSettings;
