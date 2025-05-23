@@ -41,19 +41,19 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50 dark:from-slate-900 dark:to-indigo-900 pb-20">
       <div className="container mx-auto px-4 py-8 max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
           {getGreeting() && (
-            <p className="text-muted-foreground mb-2 font-medium">
+            <p className="text-slate-600 dark:text-slate-300 mb-2 font-medium">
               {getGreeting()}
             </p>
           )}
-          <h1 className="text-3xl font-bold text-foreground mb-2">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
             SereneFlow
           </h1>
-          <p className="text-muted-foreground font-medium">
+          <p className="text-slate-600 dark:text-slate-300 font-medium">
             Find your calm through mindful breathing
           </p>
         </div>
@@ -65,16 +65,16 @@ const Index = () => {
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4 mb-8">
-          <Card className="bg-card backdrop-blur-sm border-2 border-border shadow-xl">
+          <Card className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
             <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-primary">{totalSessions}</p>
-              <p className="text-sm text-muted-foreground font-medium">Total Sessions</p>
+              <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{totalSessions}</p>
+              <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">Total Sessions</p>
             </CardContent>
           </Card>
-          <Card className="bg-card backdrop-blur-sm border-2 border-border shadow-xl">
+          <Card className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
             <CardContent className="p-4 text-center">
-              <p className="text-2xl font-bold text-primary">{currentStreak}</p>
-              <p className="text-sm text-muted-foreground font-medium">Day Streak</p>
+              <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{currentStreak}</p>
+              <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">Day Streak</p>
             </CardContent>
           </Card>
         </div>
@@ -86,40 +86,40 @@ const Index = () => {
 
         {/* Quick Start */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold text-foreground mb-4">
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
             Quick Start
           </h2>
           <div className="space-y-4">
             {breathingTechniques.slice(0, 3).map((technique) => (
               <Card 
                 key={technique.id}
-                className="bg-card backdrop-blur-sm border-2 border-border shadow-xl hover:shadow-2xl transition-all cursor-pointer"
+                className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl hover:shadow-2xl transition-all cursor-pointer"
                 onClick={() => handleTechniqueSelect(technique)}
               >
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <h3 className="font-semibold text-card-foreground">
+                        <h3 className="font-semibold text-slate-900 dark:text-white">
                           {technique.name}
                         </h3>
                         <Badge 
                           variant="secondary" 
-                          className="bg-secondary text-secondary-foreground border-border"
+                          className="bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-200 border-indigo-200 dark:border-indigo-700"
                         >
                           {technique.duration}
                         </Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground mb-3">
+                      <p className="text-sm text-slate-700 dark:text-slate-300 mb-3">
                         {technique.description}
                       </p>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                         <span>Difficulty: {technique.difficulty}</span>
                         <span>•</span>
                         <span>{technique.pattern}</span>
                       </div>
                     </div>
-                    <ArrowRight className="h-5 w-5 text-primary ml-4" />
+                    <ArrowRight className="h-5 w-5 text-indigo-600 dark:text-indigo-400 ml-4" />
                   </div>
                 </CardContent>
               </Card>
@@ -131,7 +131,7 @@ const Index = () => {
         <Button 
           onClick={() => navigate('/library')}
           variant="outline" 
-          className="w-full border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-semibold"
+          className="w-full border-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-indigo-900/30 font-semibold"
         >
           View All Techniques
         </Button>

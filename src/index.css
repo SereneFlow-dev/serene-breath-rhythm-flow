@@ -5,67 +5,78 @@
 
 @layer base {
   :root {
-    /* Light Mode - Professional Teal Palette */
-    --background: 247 250 249; /* #F7FAF9 - Very light with hint of cool green/blue */
-    --foreground: 42 51 52; /* #2A3334 - Very dark desaturated teal/gray */
+    --background: 248 250 252;
+    --foreground: 51 65 85;
 
-    --card: 255 255 255; /* #FFFFFF - Pure white */
-    --card-foreground: 42 51 52; /* #2A3334 - Same as foreground */
+    --card: 255 255 255;
+    --card-foreground: 51 65 85;
 
-    --popover: 255 255 255; /* #FFFFFF - Pure white */
-    --popover-foreground: 42 51 52; /* #2A3334 */
+    --popover: 255 255 255;
+    --popover-foreground: 51 65 85;
 
-    --primary: 0 95 107; /* #005F6B - Deep serene teal */
-    --primary-foreground: 255 255 255; /* #FFFFFF - White */
+    --primary: 79 70 229; /* indigo-600 */
+    --primary-foreground: 248 250 252;
 
-    --secondary: 232 213 196; /* #E8D5C4 - Warm focus beige */
-    --secondary-foreground: 74 68 59; /* #4A443B - Dark brownish gray */
+    --secondary: 241 245 249;
+    --secondary-foreground: 51 65 85;
 
-    --muted: 247 250 249; /* Same as background */
-    --muted-foreground: 162 174 173; /* #A2AEAD - Medium gray with hint of teal */
+    --muted: 248 250 252;
+    --muted-foreground: 100 116 139;
 
-    --accent: 232 213 196; /* #E8D5C4 - Warm focus beige */
-    --accent-foreground: 74 68 59; /* #4A443B */
+    --accent: 129 140 248; /* indigo-400 */
+    --accent-foreground: 51 65 85;
 
     --destructive: 239 68 68;
-    --destructive-foreground: 255 255 255;
+    --destructive-foreground: 248 250 252;
 
-    --border: 162 174 173; /* #A2AEAD - Subtle borders */
-    --input: 255 255 255; /* White input background */
-    --ring: 0 95 107; /* #005F6B - Primary focus ring */
+    --border: 226 232 240;
+    --input: 226 232 240;
+    --ring: 79 70 229; /* indigo-600 */
 
     --radius: 0.75rem;
+
+    /* SereneFlow custom colors */
+    --serene-teal: 79 70 229; /* indigo-600 */
+    --serene-blue: 99 102 241; /* indigo-500 */
+    --serene-sage: 129 140 248; /* indigo-400 */
+    --serene-sand: 165 180 252; /* indigo-300 */
+    --serene-lavender: 199 210 254; /* indigo-200 */
   }
 
   .dark {
-    /* Dark Mode - Professional Teal Palette */
-    --background: 24 35 36; /* #182324 - Very dark desaturated cool teal/charcoal */
-    --foreground: 225 232 231; /* #E1E8E7 - Light gray with hint of cool green/blue */
+    --background: 15 23 42;
+    --foreground: 248 250 252;
 
-    --card: 32 45 46; /* #202D2E - Dark gray, slightly lighter than background */
-    --card-foreground: 225 232 231; /* #E1E8E7 */
+    --card: 30 41 59;
+    --card-foreground: 248 250 252;
 
-    --popover: 32 45 46; /* #202D2E */
-    --popover-foreground: 225 232 231; /* #E1E8E7 */
+    --popover: 30 41 59;
+    --popover-foreground: 248 250 252;
 
-    --primary: 80 200 216; /* #50C8D8 - Lighter serene teal for dark mode */
-    --primary-foreground: 0 54 58; /* #00363A - Very dark teal */
+    --primary: 99 102 241; /* indigo-500 */
+    --primary-foreground: 15 23 42;
 
-    --secondary: 176 162 147; /* #B0A293 - Muted warm beige for dark mode */
-    --secondary-foreground: 255 255 255; /* #FFFFFF */
+    --secondary: 30 41 59;
+    --secondary-foreground: 248 250 252;
 
-    --muted: 32 45 46; /* Same as card */
-    --muted-foreground: 111 124 123; /* #6F7C7B - Medium-dark gray with hint of teal */
+    --muted: 30 41 59;
+    --muted-foreground: 148 163 184;
 
-    --accent: 176 162 147; /* #B0A293 */
-    --accent-foreground: 255 255 255; /* #FFFFFF */
+    --accent: 129 140 248; /* indigo-400 */
+    --accent-foreground: 248 250 252;
 
     --destructive: 220 38 38;
-    --destructive-foreground: 255 255 255;
+    --destructive-foreground: 248 250 252;
 
-    --border: 111 124 123; /* #6F7C7B - Subtle borders */
-    --input: 32 45 46; /* Card color for inputs */
-    --ring: 80 200 216; /* #50C8D8 - Primary focus ring */
+    --border: 51 65 85;
+    --input: 51 65 85;
+    --ring: 99 102 241; /* indigo-500 */
+
+    --serene-teal: 129 140 248; /* indigo-400 */
+    --serene-blue: 99 102 241; /* indigo-500 */
+    --serene-sage: 79 70 229; /* indigo-600 */
+    --serene-sand: 55 48 163; /* indigo-800 */
+    --serene-lavender: 67 56 202; /* indigo-700 */
   }
 }
 
@@ -80,6 +91,18 @@
 }
 
 @layer utilities {
+  .text-serene-teal {
+    color: rgb(var(--serene-teal));
+  }
+  
+  .bg-serene-teal {
+    background-color: rgb(var(--serene-teal));
+  }
+  
+  .border-serene-teal {
+    border-color: rgb(var(--serene-teal));
+  }
+
   .breathing-animation {
     animation: breathe 4s ease-in-out infinite;
   }
