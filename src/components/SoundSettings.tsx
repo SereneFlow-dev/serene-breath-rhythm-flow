@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { createSoothingSound } from "@/utils/audioUtils";
 import type { SoundType } from "@/utils/audioUtils";
 import { toast } from "sonner";
+
 const SoundSettings = () => {
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [soundType, setSoundType] = useState<SoundType>('gentle-bells');
@@ -75,8 +76,8 @@ const SoundSettings = () => {
               <SelectTrigger className="mt-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                {soundOptions.map(option => <SelectItem key={option.value} value={option.value}>
+              <SelectContent className="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600">
+                {soundOptions.map(option => <SelectItem key={option.value} value={option.value} className="text-black dark:text-slate-100">
                     {option.label}
                   </SelectItem>)}
               </SelectContent>

@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { triggerHapticPattern } from "@/utils/audioUtils";
 import type { HapticPattern } from "@/utils/audioUtils";
 import { toast } from "sonner";
+
 const HapticSettings = () => {
   const [hapticEnabled, setHapticEnabled] = useState(true);
   const [hapticPattern, setHapticPattern] = useState<HapticPattern>('gentle');
@@ -81,8 +82,8 @@ const HapticSettings = () => {
               <SelectTrigger className="mt-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                {hapticOptions.map(option => <SelectItem key={option.value} value={option.value}>
+              <SelectContent className="bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600">
+                {hapticOptions.map(option => <SelectItem key={option.value} value={option.value} className="text-black dark:text-slate-100">
                     {option.label}
                   </SelectItem>)}
               </SelectContent>
