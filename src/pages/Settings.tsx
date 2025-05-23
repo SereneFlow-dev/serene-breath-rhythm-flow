@@ -11,6 +11,7 @@ import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+
 const Settings = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -214,7 +215,11 @@ const Settings = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0">
-            <Button variant="ghost" onClick={() => window.open('/learn', '_blank')} className="w-full justify-start font-medium bg-amber-500 hover:bg-amber-400 text-slate-950">
+            <Button 
+              variant="ghost" 
+              onClick={() => window.open('/learn', '_blank')} 
+              className="w-full justify-start font-medium bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-900 dark:text-slate-100"
+            >
               <BookOpen className="h-4 w-4 mr-2" />
               Breathing Techniques Guide
             </Button>
@@ -277,4 +282,5 @@ const Settings = () => {
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} onUserChange={handleUserChange} />
     </div>;
 };
+
 export default Settings;
