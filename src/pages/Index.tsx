@@ -41,7 +41,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50 dark:from-slate-900 dark:to-indigo-900 pb-20">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-20">
       <div className="container mx-auto px-4 py-8 max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
@@ -65,13 +65,13 @@ const Index = () => {
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4 mb-8">
-          <Card className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
+          <Card className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg">
             <CardContent className="p-4 text-center">
               <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{totalSessions}</p>
               <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">Total Sessions</p>
             </CardContent>
           </Card>
-          <Card className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
+          <Card className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg">
             <CardContent className="p-4 text-center">
               <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{currentStreak}</p>
               <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">Day Streak</p>
@@ -93,7 +93,7 @@ const Index = () => {
             {breathingTechniques.slice(0, 3).map((technique) => (
               <Card 
                 key={technique.id}
-                className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl hover:shadow-2xl transition-all cursor-pointer"
+                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all cursor-pointer"
                 onClick={() => handleTechniqueSelect(technique)}
               >
                 <CardContent className="p-6">

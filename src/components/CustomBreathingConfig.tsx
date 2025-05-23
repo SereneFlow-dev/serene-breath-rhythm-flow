@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Plus, Settings2, Minus, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -96,7 +95,7 @@ const CustomBreathingConfig = ({ onStartCustomSession }: CustomBreathingConfigPr
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Card className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl hover:shadow-2xl transition-all cursor-pointer">
+        <Card className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg hover:shadow-xl transition-all cursor-pointer">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex-1">
@@ -113,7 +112,7 @@ const CustomBreathingConfig = ({ onStartCustomSession }: CustomBreathingConfigPr
           </CardContent>
         </Card>
       </DialogTrigger>
-      <DialogContent className="max-w-sm bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-slate-900 dark:text-white">Custom Breathing Pattern</DialogTitle>
         </DialogHeader>
@@ -147,7 +146,7 @@ const CustomBreathingConfig = ({ onStartCustomSession }: CustomBreathingConfigPr
               value={customName}
               onChange={(e) => setCustomName(e.target.value)}
               placeholder="My Custom Pattern"
-              className="mt-2 bg-white dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white"
+              className="mt-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white"
             />
           </div>
 
@@ -161,7 +160,7 @@ const CustomBreathingConfig = ({ onStartCustomSession }: CustomBreathingConfigPr
                 size="sm"
                 variant="outline"
                 onClick={() => setInhaleTime(adjustValue(inhaleTime, -0.5, 1, 12))}
-                className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                className="h-8 w-8 p-0 border border-indigo-300 dark:border-indigo-600"
               >
                 <Minus className="h-3 w-3" />
               </Button>
@@ -175,7 +174,7 @@ const CustomBreathingConfig = ({ onStartCustomSession }: CustomBreathingConfigPr
                 size="sm"
                 variant="outline"
                 onClick={() => setInhaleTime(adjustValue(inhaleTime, 0.5, 1, 12))}
-                className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                className="h-8 w-8 p-0 border border-indigo-300 dark:border-indigo-600"
               >
                 <Plus className="h-3 w-3" />
               </Button>
@@ -192,7 +191,7 @@ const CustomBreathingConfig = ({ onStartCustomSession }: CustomBreathingConfigPr
                 size="sm"
                 variant="outline"
                 onClick={() => setHoldInhaleTime(adjustValue(holdInhaleTime, -0.5, 0, 15))}
-                className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                className="h-8 w-8 p-0 border border-indigo-300 dark:border-indigo-600"
               >
                 <Minus className="h-3 w-3" />
               </Button>
@@ -206,7 +205,7 @@ const CustomBreathingConfig = ({ onStartCustomSession }: CustomBreathingConfigPr
                 size="sm"
                 variant="outline"
                 onClick={() => setHoldInhaleTime(adjustValue(holdInhaleTime, 0.5, 0, 15))}
-                className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                className="h-8 w-8 p-0 border border-indigo-300 dark:border-indigo-600"
               >
                 <Plus className="h-3 w-3" />
               </Button>
@@ -223,7 +222,7 @@ const CustomBreathingConfig = ({ onStartCustomSession }: CustomBreathingConfigPr
                 size="sm"
                 variant="outline"
                 onClick={() => setExhaleTime(adjustValue(exhaleTime, -0.5, 1, 12))}
-                className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                className="h-8 w-8 p-0 border border-indigo-300 dark:border-indigo-600"
               >
                 <Minus className="h-3 w-3" />
               </Button>
@@ -237,7 +236,7 @@ const CustomBreathingConfig = ({ onStartCustomSession }: CustomBreathingConfigPr
                 size="sm"
                 variant="outline"
                 onClick={() => setExhaleTime(adjustValue(exhaleTime, 0.5, 1, 12))}
-                className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                className="h-8 w-8 p-0 border border-indigo-300 dark:border-indigo-600"
               >
                 <Plus className="h-3 w-3" />
               </Button>
@@ -254,7 +253,7 @@ const CustomBreathingConfig = ({ onStartCustomSession }: CustomBreathingConfigPr
                 size="sm"
                 variant="outline"
                 onClick={() => setHoldExhaleTime(adjustValue(holdExhaleTime, -0.5, 0, 15))}
-                className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                className="h-8 w-8 p-0 border border-indigo-300 dark:border-indigo-600"
               >
                 <Minus className="h-3 w-3" />
               </Button>
@@ -268,7 +267,7 @@ const CustomBreathingConfig = ({ onStartCustomSession }: CustomBreathingConfigPr
                 size="sm"
                 variant="outline"
                 onClick={() => setHoldExhaleTime(adjustValue(holdExhaleTime, 0.5, 0, 15))}
-                className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                className="h-8 w-8 p-0 border border-indigo-300 dark:border-indigo-600"
               >
                 <Plus className="h-3 w-3" />
               </Button>
@@ -285,7 +284,7 @@ const CustomBreathingConfig = ({ onStartCustomSession }: CustomBreathingConfigPr
                 size="sm"
                 variant="outline"
                 onClick={() => setTotalCycles(adjustValue(totalCycles, -1, 1, 20))}
-                className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                className="h-8 w-8 p-0 border border-indigo-300 dark:border-indigo-600"
               >
                 <Minus className="h-3 w-3" />
               </Button>
@@ -299,7 +298,7 @@ const CustomBreathingConfig = ({ onStartCustomSession }: CustomBreathingConfigPr
                 size="sm"
                 variant="outline"
                 onClick={() => setTotalCycles(adjustValue(totalCycles, 1, 1, 20))}
-                className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                className="h-8 w-8 p-0 border border-indigo-300 dark:border-indigo-600"
               >
                 <Plus className="h-3 w-3" />
               </Button>
@@ -311,7 +310,7 @@ const CustomBreathingConfig = ({ onStartCustomSession }: CustomBreathingConfigPr
             <Button 
               onClick={savePattern} 
               variant="outline"
-              className="flex-1 border-2 border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-indigo-900/30 font-semibold"
+              className="flex-1 border border-indigo-300 text-indigo-600 hover:bg-indigo-50 dark:border-indigo-600 dark:text-indigo-400 dark:hover:bg-indigo-900/30 font-semibold"
             >
               <Save className="h-4 w-4 mr-2" />
               Save

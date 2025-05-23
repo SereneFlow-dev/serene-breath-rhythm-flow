@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Moon, Sun, BookOpen, Info, Trash2, UserPlus, LogOut, User } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -165,7 +164,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 pb-20">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-20">
       <div className="container mx-auto px-4 py-8 max-w-md">
         {/* Header */}
         <div className="text-center mb-8">
@@ -178,7 +177,7 @@ const Settings = () => {
         </div>
 
         {/* User Account */}
-        <Card className="mb-6 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
+        <Card className="mb-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg">
           <CardHeader>
             <CardTitle className="text-lg flex items-center text-slate-900 dark:text-slate-100">
               <User className="h-5 w-5 mr-2" />
@@ -218,7 +217,7 @@ const Settings = () => {
         </Card>
 
         {/* Appearance */}
-        <Card className="mb-6 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
+        <Card className="mb-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg">
           <CardHeader>
             <CardTitle className="text-lg flex items-center text-slate-900 dark:text-slate-100">
               {darkMode ? <Moon className="h-5 w-5 mr-2" /> : <Sun className="h-5 w-5 mr-2" />}
@@ -245,7 +244,7 @@ const Settings = () => {
         </div>
 
         {/* Learning */}
-        <Card className="mb-6 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
+        <Card className="mb-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg">
           <CardHeader>
             <CardTitle className="text-lg flex items-center text-slate-900 dark:text-slate-100">
               <BookOpen className="h-5 w-5 mr-2" />
@@ -265,7 +264,7 @@ const Settings = () => {
         </Card>
 
         {/* Data Management */}
-        <Card className="mb-6 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
+        <Card className="mb-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg">
           <CardHeader>
             <CardTitle className="text-lg flex items-center text-slate-900 dark:text-slate-100">
               <Info className="h-5 w-5 mr-2" />
@@ -304,7 +303,7 @@ const Settings = () => {
         </Card>
 
         {/* About */}
-        <Card className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
+        <Card className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg">
           <CardContent className="p-6">
             <div className="text-center">
               <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">
@@ -322,7 +321,7 @@ const Settings = () => {
         </Card>
 
         {/* Safety Note */}
-        <Alert className="mt-6 bg-amber-50/90 dark:bg-amber-900/30 border-2 border-amber-200 dark:border-amber-700">
+        <Alert className="mt-6 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700">
           <Info className="h-4 w-4" />
           <AlertDescription className="text-amber-900 dark:text-amber-100 font-medium">
             Always practice breathing exercises in a safe environment. Stop if you feel dizzy or uncomfortable.
