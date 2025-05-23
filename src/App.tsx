@@ -17,23 +17,25 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Router>
-          <ScrollToTop />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/session/:technique" element={<Session />} />
-            <Route path="/progress" element={<Progress />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/library" element={<Library />} />
-            <Route path="/learn" element={<Learn />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <Toaster />
-        </Router>
-      </AuthProvider>
-    </QueryClientProvider>
+    <div className="bg-white dark:bg-black min-h-screen">
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <Router>
+            <ScrollToTop />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/session/:technique" element={<Session />} />
+              <Route path="/progress" element={<Progress />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/library" element={<Library />} />
+              <Route path="/learn" element={<Learn />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <Toaster />
+          </Router>
+        </AuthProvider>
+      </QueryClientProvider>
+    </div>
   );
 }
 
