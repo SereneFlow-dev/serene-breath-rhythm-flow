@@ -12,12 +12,53 @@ interface BreathingAnimationProps {
 const BreathingAnimation = ({ 
   phase = 'inhale', 
   duration = 4000, 
-  isActive = false 
+  isActive = true 
 }: BreathingAnimationProps) => {
   const [animationScale, setAnimationScale] = useState(0.8);
+  const [currentPhase, setCurrentPhase] = useState<'inhale' | 'hold-inhale' | 'exhale' | 'hold-exhale'>('inhale');
+  const [isAnimating, setIsAnimating] = useState(false);
 
+  // Auto-cycling animation when no specific phase is provided and isActive is true
   useEffect(() => {
     if (!isActive) {
+      setAnimationScale(0.8);
+      setIsAnimating(false);
+      return;
+    }
+
+    setIsAnimating(true);
+    
+    // If a specific phase is provided, use it
+    if (phase !== 'inhale' || isActive) {
+      setCurrentPhase(phase);
+      return;
+    }
+
+    // Auto-cycle through breathing phases
+    const cycle = async () => {
+      const phases: Array<'inhale' | 'hold-inhale' | 'exhale' | 'hold-exhale'> = 
+        ['inhale', 'hold-inhale', 'exhale', 'hold-exhale'];
+      const durations = [4000, 1000, 4000, 1000]; // 4s inhale, 1s hold, 4s exhale, 1s hold
+      
+      let phaseIndex = 0;
+      
+      const nextPhase = () => {
+        if (!isActive) return;
+        
+        setCurrentPhase(phases[phaseIndex]);
+        phaseIndex = (phaseIndex + 1) % phases.length;
+        
+        setTimeout(nextPhase, durations[phaseIndex === 0 ? phases.length - 1 : phaseIndex - 1]);
+      };
+      
+      nextPhase();
+    };
+
+    cycle();
+  }, [isActive, phase]);
+
+  useEffect(() => {
+    if (!isAnimating) {
       setAnimationScale(0.8);
       return;
     }
@@ -25,7 +66,7 @@ const BreathingAnimation = ({
     let targetScale = 0.8;
     
     // Update animation according to the breathing phase
-    switch (phase) {
+    switch (currentPhase) {
       case 'inhale':
         targetScale = 1.3;
         break;
@@ -48,7 +89,7 @@ const BreathingAnimation = ({
       const hapticPattern = (localStorage.getItem('sereneflow-haptic-pattern') as HapticPattern) || 'gentle';
       
       // Different patterns for different phases
-      if (phase === 'inhale' || phase === 'exhale') {
+      if (currentPhase === 'inhale' || currentPhase === 'exhale') {
         triggerHapticPattern(hapticPattern);
       } else {
         // Lighter feedback for hold phases
@@ -60,12 +101,12 @@ const BreathingAnimation = ({
     const soundEnabled = localStorage.getItem('sereneflow-sound') === 'true';
     if (soundEnabled) {
       const soundType = (localStorage.getItem('sereneflow-sound-type') as SoundType) || 'gentle-bells';
-      createSoothingSound(soundType, phase);
+      createSoothingSound(soundType, currentPhase);
     }
-  }, [phase, duration, isActive]);
+  }, [currentPhase, isAnimating]);
 
   const getPhaseColor = () => {
-    switch (phase) {
+    switch (currentPhase) {
       case 'inhale':
         return 'from-indigo-500 to-blue-400';
       case 'hold-inhale':
@@ -80,7 +121,7 @@ const BreathingAnimation = ({
   };
 
   const getEasingFunction = () => {
-    switch (phase) {
+    switch (currentPhase) {
       case 'inhale':
         return 'ease-out';
       case 'hold-inhale':
@@ -91,6 +132,21 @@ const BreathingAnimation = ({
         return 'linear';
       default:
         return 'ease-in-out';
+    }
+  };
+
+  const getPhaseText = () => {
+    switch (currentPhase) {
+      case 'inhale':
+        return 'Breathe In';
+      case 'hold-inhale':
+        return 'Hold';
+      case 'exhale':
+        return 'Breathe Out';
+      case 'hold-exhale':
+        return 'Hold';
+      default:
+        return 'Breathe';
     }
   };
 
@@ -105,7 +161,7 @@ const BreathingAnimation = ({
           className={`absolute inset-4 rounded-full bg-gradient-to-br ${getPhaseColor()} shadow-2xl`}
           style={{
             transform: `scale(${animationScale})`,
-            transition: isActive ? `transform ${duration}ms ${getEasingFunction()}` : 'transform 500ms ease-in-out'
+            transition: isAnimating ? `transform ${duration}ms ${getEasingFunction()}` : 'transform 500ms ease-in-out'
           }}
         >
           {/* Inner glow effect */}
@@ -115,6 +171,15 @@ const BreathingAnimation = ({
         {/* Center dot */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg opacity-90"></div>
       </div>
+      
+      {/* Phase indicator */}
+      {isAnimating && (
+        <div className="mt-8 text-center">
+          <p className="text-lg font-medium text-slate-700 dark:text-slate-300">
+            {getPhaseText()}
+          </p>
+        </div>
+      )}
     </div>
   );
 };
