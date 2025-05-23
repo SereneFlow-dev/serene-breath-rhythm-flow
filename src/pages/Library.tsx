@@ -14,8 +14,8 @@ const Library = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
 
-  const categories = ["Relaxation", "Focus", "Energy", "Sleep", "Health"];
-  const difficulties = ["Beginner", "Intermediate", "Advanced"];
+  const categories = ["Relaxation", "Focus", "Energy", "Sleep", "Health", "Pranayama", "Meditation", "Therapeutic"];
+  const difficulties = ["Beginner", "Intermediate", "Advanced", "Expert"];
 
   const filteredTechniques = breathingTechniques.filter((technique) => {
     const matchesSearch = technique.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -84,7 +84,7 @@ const Library = () => {
                   <Badge
                     key={category}
                     variant={selectedCategory === category ? "default" : "outline"}
-                    className={`cursor-pointer ${
+                    className={`cursor-pointer text-xs ${
                       selectedCategory === category
                         ? "bg-serene-teal text-white"
                         : "border-serene-teal text-serene-teal hover:bg-serene-teal hover:text-white"
@@ -105,7 +105,7 @@ const Library = () => {
                   <Badge
                     key={difficulty}
                     variant={selectedDifficulty === difficulty ? "default" : "outline"}
-                    className={`cursor-pointer ${
+                    className={`cursor-pointer text-xs ${
                       selectedDifficulty === difficulty
                         ? "bg-serene-teal text-white"
                         : "border-serene-teal text-serene-teal hover:bg-serene-teal hover:text-white"
@@ -148,6 +148,11 @@ const Library = () => {
                           {cat}
                         </Badge>
                       ))}
+                      {technique.warnings && (
+                        <Badge variant="outline" className="text-xs border-orange-400/50 text-orange-600">
+                          ⚠️ Caution
+                        </Badge>
+                      )}
                     </div>
 
                     <div className="text-xs text-slate-500 dark:text-slate-400">

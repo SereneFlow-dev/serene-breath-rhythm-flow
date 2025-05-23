@@ -11,6 +11,7 @@ import Learn from "./pages/Learn";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 import { AuthProvider } from "./hooks/useAuth";
+import { PremiumProvider } from "./hooks/usePremium";
 import { useEffect } from "react";
 import "./App.css";
 
@@ -27,19 +28,21 @@ function App() {
     <div className="min-h-screen w-screen bg-slate-900">
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <Router>
-            <ScrollToTop />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/session/:technique" element={<Session />} />
-              <Route path="/progress" element={<Progress />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/library" element={<Library />} />
-              <Route path="/learn" element={<Learn />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <Toaster />
-          </Router>
+          <PremiumProvider>
+            <Router>
+              <ScrollToTop />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/session/:technique" element={<Session />} />
+                <Route path="/progress" element={<Progress />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/library" element={<Library />} />
+                <Route path="/learn" element={<Learn />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <Toaster />
+            </Router>
+          </PremiumProvider>
         </AuthProvider>
       </QueryClientProvider>
     </div>
