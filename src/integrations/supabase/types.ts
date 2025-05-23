@@ -9,7 +9,87 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      custom_patterns: {
+        Row: {
+          created_at: string | null
+          exhale_duration: number
+          hold_exhale_duration: number
+          hold_inhale_duration: number
+          id: string
+          inhale_duration: number
+          name: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          exhale_duration: number
+          hold_exhale_duration: number
+          hold_inhale_duration: number
+          id?: string
+          inhale_duration: number
+          name: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          exhale_duration?: number
+          hold_exhale_duration?: number
+          hold_inhale_duration?: number
+          id?: string
+          inhale_duration?: number
+          name?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          full_name?: string | null
+          id: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      sessions: {
+        Row: {
+          completed_at: string | null
+          duration: number
+          id: string
+          technique_name: string
+          user_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          duration: number
+          id?: string
+          technique_name: string
+          user_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          duration?: number
+          id?: string
+          technique_name?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
