@@ -22,7 +22,11 @@ const FeedbackSettings = () => {
     localStorage.setItem('sereneflow-haptic', checked.toString());
     
     if (checked && 'vibrate' in navigator) {
-      navigator.vibrate(100);
+      try {
+        navigator.vibrate(100);
+      } catch (error) {
+        console.log('Vibration not supported');
+      }
     }
   };
 
@@ -31,26 +35,30 @@ const FeedbackSettings = () => {
     localStorage.setItem('sereneflow-sound', checked.toString());
     
     if (checked) {
-      // Test sound
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
-      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.1);
+      try {
+        // Test sound
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.1);
+      } catch (error) {
+        console.log('Audio not supported');
+      }
     }
   };
 
   return (
-    <Card className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg">
+    <Card className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
       <CardHeader>
-        <CardTitle className="text-lg flex items-center text-slate-800 dark:text-slate-100">
+        <CardTitle className="text-lg flex items-center text-slate-900 dark:text-white">
           Feedback Settings
         </CardTitle>
       </CardHeader>
@@ -58,7 +66,7 @@ const FeedbackSettings = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Smartphone className="h-4 w-4 text-serene-teal" />
-            <Label htmlFor="haptic" className="text-slate-700 dark:text-slate-200">
+            <Label htmlFor="haptic" className="text-slate-800 dark:text-slate-100 font-medium">
               Haptic Feedback
             </Label>
           </div>
@@ -72,7 +80,7 @@ const FeedbackSettings = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Volume2 className="h-4 w-4 text-serene-teal" />
-            <Label htmlFor="sound" className="text-slate-700 dark:text-slate-200">
+            <Label htmlFor="sound" className="text-slate-800 dark:text-slate-100 font-medium">
               Sound Feedback
             </Label>
           </div>

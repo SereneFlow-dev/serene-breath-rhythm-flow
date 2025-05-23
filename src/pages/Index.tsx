@@ -65,31 +65,31 @@ const Index = () => {
 
         {/* Quick Stats */}
         <div className="grid grid-cols-2 gap-4 mb-8">
-          <Card className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg">
+          <Card className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
             <CardContent className="p-4 text-center">
               <TrendingUp className="h-6 w-6 text-serene-teal mx-auto mb-2" />
               <p className="text-2xl font-bold text-slate-900 dark:text-white">{streak}</p>
-              <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">Day Streak</p>
+              <p className="text-sm text-slate-700 dark:text-slate-200 font-medium">Day Streak</p>
             </CardContent>
           </Card>
-          <Card className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg">
+          <Card className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
             <CardContent className="p-4 text-center">
               <Clock className="h-6 w-6 text-serene-teal mx-auto mb-2" />
               <p className="text-2xl font-bold text-slate-900 dark:text-white">{totalSessions}</p>
-              <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">Sessions</p>
+              <p className="text-sm text-slate-700 dark:text-slate-200 font-medium">Sessions</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Quick Start */}
-        <Card className="mb-6 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg">
+        <Card className="mb-6 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
           <CardContent className="p-6">
             <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4 flex items-center">
               <Play className="h-5 w-5 mr-2 text-serene-teal" />
               Quick Start
             </h2>
             <Link to="/session/box-breathing">
-              <Button className="w-full bg-serene-teal hover:bg-serene-teal/90 text-white font-semibold py-3 rounded-xl shadow-md">
+              <Button className="w-full bg-serene-teal hover:bg-serene-teal/90 text-white font-semibold py-3 rounded-xl shadow-md transition-all">
                 Start Box Breathing
               </Button>
             </Link>
@@ -115,18 +115,18 @@ const Index = () => {
           <div className="space-y-3">
             {featuredTechniques.map((technique) => (
               <Link key={technique.id} to={`/session/${technique.id}`}>
-                <Card className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg hover:shadow-xl transition-all">
+                <Card className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl hover:shadow-2xl transition-all">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
                         <h3 className="font-bold text-slate-900 dark:text-white mb-1">
                           {technique.name}
                         </h3>
-                        <p className="text-sm text-slate-600 dark:text-slate-300 line-clamp-2">
+                        <p className="text-sm text-slate-700 dark:text-slate-200 line-clamp-2">
                           {technique.description}
                         </p>
                         <div className="flex items-center mt-2">
-                          <span className="text-xs bg-serene-teal/20 text-serene-teal px-2 py-1 rounded-full font-medium">
+                          <span className="text-xs bg-serene-teal/20 text-serene-teal px-2 py-1 rounded-full font-medium border border-serene-teal/30">
                             {technique.difficulty}
                           </span>
                         </div>
@@ -141,16 +141,16 @@ const Index = () => {
         </div>
 
         {/* Explore More */}
-        <Card className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-lg">
+        <Card className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border-2 border-slate-200/80 dark:border-slate-700/80 shadow-xl">
           <CardContent className="p-6 text-center">
             <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
               Explore More Techniques
             </h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-4">
+            <p className="text-slate-700 dark:text-slate-200 mb-4">
               Discover breathing exercises for every need
             </p>
             <Link to="/library">
-              <Button variant="outline" className="border-2 border-serene-teal text-serene-teal hover:bg-serene-teal hover:text-white font-semibold">
+              <Button variant="outline" className="border-2 border-serene-teal text-serene-teal hover:bg-serene-teal hover:text-white font-semibold transition-all">
                 Browse Library
               </Button>
             </Link>

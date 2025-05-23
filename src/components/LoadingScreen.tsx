@@ -22,7 +22,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
     const timer = setTimeout(() => {
       setIsVisible(false);
       setTimeout(onComplete, 300); // Wait for fade out animation
-    }, 2500);
+    }, 1800); // Changed to 1.8 seconds total
 
     return () => clearTimeout(timer);
   }, [onComplete]);
