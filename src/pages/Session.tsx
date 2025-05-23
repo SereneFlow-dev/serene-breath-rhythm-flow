@@ -1,12 +1,13 @@
-
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Play, Pause, Square, ArrowLeft, Settings as SettingsIcon } from "lucide-react";
+import { Play, Pause, Square, ArrowLeft, Settings as SettingsIcon, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BreathingAnimation from "@/components/BreathingAnimation";
 import { getBreathingTechnique } from "@/data/breathingTechniques";
 import { toast } from "sonner";
@@ -31,6 +32,10 @@ const Session = () => {
   const [holdInhaleTime, setHoldInhaleTime] = useState(4);
   const [exhaleTime, setExhaleTime] = useState(4);
   const [holdExhaleTime, setHoldExhaleTime] = useState(4);
+
+  // Custom breathing pattern
+  const [customName, setCustomName] = useState("");
+  const [showCustomConfig, setShowCustomConfig] = useState(false);
 
   useEffect(() => {
     if (technique) {
@@ -167,6 +172,30 @@ const Session = () => {
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
+  const saveCustomPattern = () => {
+    if (!customName.trim()) {
+      toast.error("Please enter a name for your custom pattern");
+      return;
+    }
+
+    const customPatterns = JSON.parse(localStorage.getItem('sereneflow-custom-patterns') || '[]');
+    const newPattern = {
+      id: `custom-${Date.now()}`,
+      name: customName,
+      inhale: inhaleTime,
+      holdInhale: holdInhaleTime,
+      exhale: exhaleTime,
+      holdExhale: holdExhaleTime,
+      created: new Date().toISOString()
+    };
+
+    customPatterns.push(newPattern);
+    localStorage.setItem('sereneflow-custom-patterns', JSON.stringify(customPatterns));
+    toast.success("Custom breathing pattern saved!");
+    setCustomName("");
+    setShowCustomConfig(false);
+  };
+
   if (!technique) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -186,7 +215,7 @@ const Session = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate('/')}
+            onClick={() => navigate(-1)}
             className="p-2"
           >
             <ArrowLeft className="h-5 w-5" />
@@ -211,67 +240,132 @@ const Session = () => {
               <DialogHeader>
                 <DialogTitle>Session Settings</DialogTitle>
               </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <Label>Total Cycles: {totalCycles}</Label>
-                  <Slider
-                    value={[totalCycles]}
-                    onValueChange={(value) => setTotalCycles(value[0])}
-                    min={1}
-                    max={20}
-                    step={1}
-                    className="mt-2"
-                  />
-                </div>
-                {technique.customizable && (
-                  <>
-                    <div>
-                      <Label>Inhale: {inhaleTime}s</Label>
-                      <Slider
-                        value={[inhaleTime]}
-                        onValueChange={(value) => setInhaleTime(value[0])}
-                        min={1}
-                        max={12}
-                        step={0.5}
-                        className="mt-2"
-                      />
-                    </div>
-                    <div>
-                      <Label>Hold (after inhale): {holdInhaleTime}s</Label>
-                      <Slider
-                        value={[holdInhaleTime]}
-                        onValueChange={(value) => setHoldInhaleTime(value[0])}
-                        min={0}
-                        max={15}
-                        step={0.5}
-                        className="mt-2"
-                      />
-                    </div>
-                    <div>
-                      <Label>Exhale: {exhaleTime}s</Label>
-                      <Slider
-                        value={[exhaleTime]}
-                        onValueChange={(value) => setExhaleTime(value[0])}
-                        min={1}
-                        max={12}
-                        step={0.5}
-                        className="mt-2"
-                      />
-                    </div>
-                    <div>
-                      <Label>Hold (after exhale): {holdExhaleTime}s</Label>
-                      <Slider
-                        value={[holdExhaleTime]}
-                        onValueChange={(value) => setHoldExhaleTime(value[0])}
-                        min={0}
-                        max={15}
-                        step={0.5}
-                        className="mt-2"
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
+              <Tabs defaultValue="settings" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="settings">Settings</TabsTrigger>
+                  <TabsTrigger value="custom">Custom</TabsTrigger>
+                </TabsList>
+                <TabsContent value="settings" className="space-y-4">
+                  <div>
+                    <Label>Total Cycles: {totalCycles}</Label>
+                    <Slider
+                      value={[totalCycles]}
+                      onValueChange={(value) => setTotalCycles(value[0])}
+                      min={1}
+                      max={20}
+                      step={1}
+                      className="mt-2"
+                    />
+                  </div>
+                  {technique.customizable && (
+                    <>
+                      <div>
+                        <Label>Inhale: {inhaleTime}s</Label>
+                        <Slider
+                          value={[inhaleTime]}
+                          onValueChange={(value) => setInhaleTime(value[0])}
+                          min={1}
+                          max={12}
+                          step={0.5}
+                          className="mt-2"
+                        />
+                      </div>
+                      <div>
+                        <Label>Hold (after inhale): {holdInhaleTime}s</Label>
+                        <Slider
+                          value={[holdInhaleTime]}
+                          onValueChange={(value) => setHoldInhaleTime(value[0])}
+                          min={0}
+                          max={15}
+                          step={0.5}
+                          className="mt-2"
+                        />
+                      </div>
+                      <div>
+                        <Label>Exhale: {exhaleTime}s</Label>
+                        <Slider
+                          value={[exhaleTime]}
+                          onValueChange={(value) => setExhaleTime(value[0])}
+                          min={1}
+                          max={12}
+                          step={0.5}
+                          className="mt-2"
+                        />
+                      </div>
+                      <div>
+                        <Label>Hold (after exhale): {holdExhaleTime}s</Label>
+                        <Slider
+                          value={[holdExhaleTime]}
+                          onValueChange={(value) => setHoldExhaleTime(value[0])}
+                          min={0}
+                          max={15}
+                          step={0.5}
+                          className="mt-2"
+                        />
+                      </div>
+                    </>
+                  )}
+                </TabsContent>
+                <TabsContent value="custom" className="space-y-4">
+                  <div>
+                    <Label>Pattern Name</Label>
+                    <Input
+                      value={customName}
+                      onChange={(e) => setCustomName(e.target.value)}
+                      placeholder="My Custom Pattern"
+                      className="mt-2"
+                    />
+                  </div>
+                  <div>
+                    <Label>Inhale: {inhaleTime}s</Label>
+                    <Slider
+                      value={[inhaleTime]}
+                      onValueChange={(value) => setInhaleTime(value[0])}
+                      min={1}
+                      max={12}
+                      step={0.5}
+                      className="mt-2"
+                    />
+                  </div>
+                  <div>
+                    <Label>Hold (after inhale): {holdInhaleTime}s</Label>
+                    <Slider
+                      value={[holdInhaleTime]}
+                      onValueChange={(value) => setHoldInhaleTime(value[0])}
+                      min={0}
+                      max={15}
+                      step={0.5}
+                      className="mt-2"
+                    />
+                  </div>
+                  <div>
+                    <Label>Exhale: {exhaleTime}s</Label>
+                    <Slider
+                      value={[exhaleTime]}
+                      onValueChange={(value) => setExhaleTime(value[0])}
+                      min={1}
+                      max={12}
+                      step={0.5}
+                      className="mt-2"
+                    />
+                  </div>
+                  <div>
+                    <Label>Hold (after exhale): {holdExhaleTime}s</Label>
+                    <Slider
+                      value={[holdExhaleTime]}
+                      onValueChange={(value) => setHoldExhaleTime(value[0])}
+                      min={0}
+                      max={15}
+                      step={0.5}
+                      className="mt-2"
+                    />
+                  </div>
+                  <Button onClick={saveCustomPattern} className="w-full">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Save Custom Pattern
+                  </Button>
+                </TabsContent>
+              </Tabs>
             </DialogContent>
           </Dialog>
         </div>
