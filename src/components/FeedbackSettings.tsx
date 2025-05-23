@@ -75,7 +75,7 @@ const FeedbackSettings = () => {
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Smartphone className="h-4 w-4 text-serene-teal" />
+            <Smartphone className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
             <Label htmlFor="haptic" className="text-slate-800 dark:text-slate-100 font-medium">
               Haptic Feedback
             </Label>
@@ -89,7 +89,7 @@ const FeedbackSettings = () => {
         
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Volume2 className="h-4 w-4 text-serene-teal" />
+            <Volume2 className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
             <Label htmlFor="sound" className="text-slate-800 dark:text-slate-100 font-medium">
               Sound Feedback
             </Label>

@@ -14,7 +14,7 @@
     --popover: 255 255 255;
     --popover-foreground: 51 65 85;
 
-    --primary: 14 165 233;
+    --primary: 79 70 229; /* indigo-600 */
     --primary-foreground: 248 250 252;
 
     --secondary: 241 245 249;
@@ -23,7 +23,7 @@
     --muted: 248 250 252;
     --muted-foreground: 100 116 139;
 
-    --accent: 160 210 219;
+    --accent: 129 140 248; /* indigo-400 */
     --accent-foreground: 51 65 85;
 
     --destructive: 239 68 68;
@@ -31,16 +31,16 @@
 
     --border: 226 232 240;
     --input: 226 232 240;
-    --ring: 14 165 233;
+    --ring: 79 70 229; /* indigo-600 */
 
     --radius: 0.75rem;
 
     /* SereneFlow custom colors */
-    --serene-teal: 160 210 219;
-    --serene-blue: 168 216 234;
-    --serene-sage: 185 202 210;
-    --serene-sand: 244 234 213;
-    --serene-lavender: 216 191 216;
+    --serene-teal: 79 70 229; /* indigo-600 */
+    --serene-blue: 99 102 241; /* indigo-500 */
+    --serene-sage: 129 140 248; /* indigo-400 */
+    --serene-sand: 165 180 252; /* indigo-300 */
+    --serene-lavender: 199 210 254; /* indigo-200 */
   }
 
   .dark {
@@ -53,7 +53,7 @@
     --popover: 30 41 59;
     --popover-foreground: 248 250 252;
 
-    --primary: 56 189 248;
+    --primary: 99 102 241; /* indigo-500 */
     --primary-foreground: 15 23 42;
 
     --secondary: 30 41 59;
@@ -62,7 +62,7 @@
     --muted: 30 41 59;
     --muted-foreground: 148 163 184;
 
-    --accent: 51 65 85;
+    --accent: 129 140 248; /* indigo-400 */
     --accent-foreground: 248 250 252;
 
     --destructive: 220 38 38;
@@ -70,13 +70,13 @@
 
     --border: 51 65 85;
     --input: 51 65 85;
-    --ring: 56 189 248;
+    --ring: 99 102 241; /* indigo-500 */
 
-    --serene-teal: 94 129 172;
-    --serene-blue: 100 149 237;
-    --serene-sage: 119 136 153;
-    --serene-sand: 205 133 63;
-    --serene-lavender: 147 112 219;
+    --serene-teal: 129 140 248; /* indigo-400 */
+    --serene-blue: 99 102 241; /* indigo-500 */
+    --serene-sage: 79 70 229; /* indigo-600 */
+    --serene-sand: 55 48 163; /* indigo-800 */
+    --serene-lavender: 67 56 202; /* indigo-700 */
   }
 }
 
