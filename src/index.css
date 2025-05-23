@@ -5,7 +5,7 @@
 
 @layer base {
   :root {
-    --background: 248 250 252;
+    --background: 255 255 255; /* Pure white for light mode */
     --foreground: 51 65 85;
 
     --card: 255 255 255;
@@ -44,7 +44,7 @@
   }
 
   .dark {
-    --background: 15 23 42;
+    --background: 15 23 42; /* Dark slate background */
     --foreground: 248 250 252;
 
     --card: 30 41 59;
@@ -85,8 +85,24 @@
     @apply border-border;
   }
 
+  html {
+    @apply bg-background;
+    min-height: 100vh;
+    width: 100vw;
+  }
+
   body {
     @apply bg-background text-foreground font-sans;
+    min-height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+  }
+
+  #root {
+    @apply bg-background;
+    min-height: 100vh;
+    width: 100vw;
   }
 }
 
