@@ -14,6 +14,8 @@ export interface BreathingTechnique {
   instructions: string[];
   customizable: boolean;
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  duration: string;
+  pattern: string;
 }
 
 export const breathingTechniques: BreathingTechnique[] = [
@@ -38,6 +40,8 @@ export const breathingTechniques: BreathingTechnique[] = [
     ],
     customizable: true,
     difficulty: 'Beginner',
+    duration: '2-5 min',
+    pattern: '4-4-4-4',
   },
   {
     id: '4-7-8-breathing',
@@ -60,6 +64,8 @@ export const breathingTechniques: BreathingTechnique[] = [
     ],
     customizable: true,
     difficulty: 'Beginner',
+    duration: '3-5 min',
+    pattern: '4-7-8-0',
   },
   {
     id: 'diaphragmatic-breathing',
@@ -82,6 +88,8 @@ export const breathingTechniques: BreathingTechnique[] = [
     ],
     customizable: true,
     difficulty: 'Beginner',
+    duration: '5-10 min',
+    pattern: '4-1-6-1',
   },
   {
     id: 'coherence-breathing',
@@ -104,6 +112,8 @@ export const breathingTechniques: BreathingTechnique[] = [
     ],
     customizable: true,
     difficulty: 'Intermediate',
+    duration: '5-15 min',
+    pattern: '5.5-0-5.5-0',
   },
   {
     id: 'alternate-nostril',
@@ -126,6 +136,8 @@ export const breathingTechniques: BreathingTechnique[] = [
     ],
     customizable: true,
     difficulty: 'Intermediate',
+    duration: '5-10 min',
+    pattern: '4-0-6-0',
   },
   {
     id: 'energizing-breath',
@@ -148,6 +160,8 @@ export const breathingTechniques: BreathingTechnique[] = [
     ],
     customizable: false,
     difficulty: 'Advanced',
+    duration: '10-15 min',
+    pattern: '2-0-2-0',
   },
 ];
 

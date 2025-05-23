@@ -2,12 +2,16 @@
 import { useEffect, useState } from "react";
 
 interface BreathingAnimationProps {
-  phase: 'inhale' | 'hold-inhale' | 'exhale' | 'hold-exhale';
-  duration: number;
-  isActive: boolean;
+  phase?: 'inhale' | 'hold-inhale' | 'exhale' | 'hold-exhale';
+  duration?: number;
+  isActive?: boolean;
 }
 
-const BreathingAnimation = ({ phase, duration, isActive }: BreathingAnimationProps) => {
+const BreathingAnimation = ({ 
+  phase = 'inhale', 
+  duration = 4000, 
+  isActive = false 
+}: BreathingAnimationProps) => {
   const [animationScale, setAnimationScale] = useState(0.8);
 
   useEffect(() => {
@@ -100,15 +104,15 @@ const BreathingAnimation = ({ phase, duration, isActive }: BreathingAnimationPro
   const getPhaseColor = () => {
     switch (phase) {
       case 'inhale':
-        return 'from-blue-500 to-cyan-400';
+        return 'from-indigo-500 to-blue-400';
       case 'hold-inhale':
-        return 'from-cyan-400 to-teal-400';
+        return 'from-blue-400 to-cyan-400';
       case 'exhale':
-        return 'from-teal-400 to-green-400';
+        return 'from-cyan-400 to-teal-400';
       case 'hold-exhale':
-        return 'from-green-400 to-blue-500';
+        return 'from-teal-400 to-indigo-500';
       default:
-        return 'from-blue-500 to-cyan-400';
+        return 'from-indigo-500 to-blue-400';
     }
   };
 
