@@ -17,7 +17,7 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <div className="min-h-screen w-full bg-background">
+    <div className="min-h-screen w-screen bg-white dark:bg-slate-900">
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <Router>

@@ -86,13 +86,15 @@
   }
 
   html {
-    @apply bg-background;
+    @apply bg-white dark:bg-slate-900;
     min-height: 100vh;
     width: 100vw;
+    margin: 0;
+    padding: 0;
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-white dark:bg-slate-900 text-foreground font-sans;
     min-height: 100vh;
     width: 100vw;
     margin: 0;
@@ -100,7 +102,7 @@
   }
 
   #root {
-    @apply bg-background;
+    @apply bg-white dark:bg-slate-900;
     min-height: 100vh;
     width: 100vw;
   }

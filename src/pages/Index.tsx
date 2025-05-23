@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -40,7 +39,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen h-screen w-screen flex flex-col bg-background">
+    <div className="min-h-screen h-screen w-screen flex flex-col bg-white dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8 max-w-md flex-1">
         {/* Header */}
         <div className="text-center mb-8">
