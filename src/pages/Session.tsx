@@ -437,7 +437,7 @@ const Session = () => {
                     />
                   </div>
 
-                  {/* Custom pattern controls with +/- buttons */}
+                  {/* Inhale */}
                   <div>
                     <Label className="text-slate-700 dark:text-slate-200 font-medium mb-2 block">
                       Inhale: {inhaleTime}s
@@ -468,7 +468,98 @@ const Session = () => {
                     </div>
                   </div>
 
-                  {/* ... similar blocks for hold-inhale, exhale, hold-exhale ... */}
+                  {/* Hold Inhale */}
+                  <div>
+                    <Label className="text-slate-700 dark:text-slate-200 font-medium mb-2 block">
+                      Hold (after inhale): {holdInhaleTime}s
+                    </Label>
+                    <div className="flex items-center gap-3">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setHoldInhaleTime(adjustValue(holdInhaleTime, -0.5, 0, 15))}
+                        className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                      >
+                        <Minus className="h-3 w-3" />
+                      </Button>
+                      <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-600 rounded">
+                        <div 
+                          className="h-full bg-indigo-600 rounded transition-all"
+                          style={{ width: `${(holdInhaleTime / 15) * 100}%` }}
+                        />
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setHoldInhaleTime(adjustValue(holdInhaleTime, 0.5, 0, 15))}
+                        className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                      >
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Exhale */}
+                  <div>
+                    <Label className="text-slate-700 dark:text-slate-200 font-medium mb-2 block">
+                      Exhale: {exhaleTime}s
+                    </Label>
+                    <div className="flex items-center gap-3">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setExhaleTime(adjustValue(exhaleTime, -0.5, 1, 12))}
+                        className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                      >
+                        <Minus className="h-3 w-3" />
+                      </Button>
+                      <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-600 rounded">
+                        <div 
+                          className="h-full bg-indigo-600 rounded transition-all"
+                          style={{ width: `${(exhaleTime / 12) * 100}%` }}
+                        />
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setExhaleTime(adjustValue(exhaleTime, 0.5, 1, 12))}
+                        className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                      >
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Hold Exhale */}
+                  <div>
+                    <Label className="text-slate-700 dark:text-slate-200 font-medium mb-2 block">
+                      Hold (after exhale): {holdExhaleTime}s
+                    </Label>
+                    <div className="flex items-center gap-3">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setHoldExhaleTime(adjustValue(holdExhaleTime, -0.5, 0, 15))}
+                        className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                      >
+                        <Minus className="h-3 w-3" />
+                      </Button>
+                      <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-600 rounded">
+                        <div 
+                          className="h-full bg-indigo-600 rounded transition-all"
+                          style={{ width: `${(holdExhaleTime / 15) * 100}%` }}
+                        />
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setHoldExhaleTime(adjustValue(holdExhaleTime, 0.5, 0, 15))}
+                        className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                      >
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
 
                   <Button onClick={saveCustomPattern} className="w-full bg-serene-teal hover:bg-serene-teal/90 text-white font-semibold">
                     <Plus className="h-4 w-4 mr-2" />
@@ -504,7 +595,7 @@ const Session = () => {
         <div className="flex-1 flex items-center justify-center min-h-[400px] mb-8">
           <BreathingAnimation
             phase={currentPhase}
-            duration={phaseTimeRemaining}
+            duration={getPhaseTimings()[currentPhase]}
             isActive={isActive && !isPaused}
           />
         </div>

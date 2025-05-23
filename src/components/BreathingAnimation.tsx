@@ -23,33 +23,21 @@ const BreathingAnimation = ({
     }
 
     let targetScale = 0.8;
-    let easingFunction = "ease-in-out";
-
+    
     // Update animation according to the breathing phase
     switch (phase) {
       case 'inhale':
         targetScale = 1.3;
-        easingFunction = "ease-out";
         break;
       case 'hold-inhale':
         targetScale = 1.3;
-        easingFunction = "linear";
         break;
       case 'exhale':
         targetScale = 0.8;
-        easingFunction = "ease-in";
         break;
       case 'hold-exhale':
         targetScale = 0.8;
-        easingFunction = "linear";
         break;
-    }
-
-    // Set the animation properties
-    const element = document.getElementById('breathing-circle');
-    if (element) {
-      element.style.transition = `transform ${duration}ms ${easingFunction}`;
-      element.style.transform = `scale(${targetScale})`;
     }
 
     setAnimationScale(targetScale);
@@ -106,6 +94,21 @@ const BreathingAnimation = ({
     }
   };
 
+  const getEasingFunction = () => {
+    switch (phase) {
+      case 'inhale':
+        return 'ease-out';
+      case 'hold-inhale':
+        return 'linear';
+      case 'exhale':
+        return 'ease-in';
+      case 'hold-exhale':
+        return 'linear';
+      default:
+        return 'ease-in-out';
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center h-full">
       <div className="relative mb-8">
@@ -114,11 +117,10 @@ const BreathingAnimation = ({
         
         {/* Breathing circle */}
         <div
-          id="breathing-circle"
           className={`absolute inset-4 rounded-full bg-gradient-to-br ${getPhaseColor()} shadow-2xl`}
           style={{
             transform: `scale(${animationScale})`,
-            transition: isActive ? undefined : 'transform 500ms ease-in-out'
+            transition: isActive ? `transform ${duration}ms ${getEasingFunction()}` : 'transform 500ms ease-in-out'
           }}
         >
           {/* Inner glow effect */}
