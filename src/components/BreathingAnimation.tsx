@@ -1,5 +1,7 @@
 
 import { useEffect, useState } from "react";
+import { createSoothingSound, triggerHapticPattern } from "@/utils/audioUtils";
+import type { SoundType, HapticPattern } from "@/utils/audioUtils";
 
 interface BreathingAnimationProps {
   phase?: 'inhale' | 'hold-inhale' | 'exhale' | 'hold-exhale';
@@ -54,50 +56,23 @@ const BreathingAnimation = ({
 
     // Provide haptic feedback if enabled
     const hapticEnabled = localStorage.getItem('sereneflow-haptic') !== 'false';
-    if (hapticEnabled && 'vibrate' in navigator) {
-      try {
-        navigator.vibrate(30);
-      } catch (error) {
-        console.log('Vibration not supported');
+    if (hapticEnabled) {
+      const hapticPattern = (localStorage.getItem('sereneflow-haptic-pattern') as HapticPattern) || 'gentle';
+      
+      // Different patterns for different phases
+      if (phase === 'inhale' || phase === 'exhale') {
+        triggerHapticPattern(hapticPattern);
+      } else {
+        // Lighter feedback for hold phases
+        triggerHapticPattern('subtle');
       }
     }
 
     // Provide sound feedback if enabled
     const soundEnabled = localStorage.getItem('sereneflow-sound') === 'true';
     if (soundEnabled) {
-      try {
-        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-
-        // Different sounds for different phases
-        let frequency = 400;
-        switch (phase) {
-          case 'inhale':
-            frequency = 350; // Lower sound for inhale
-            break;
-          case 'hold-inhale':
-            frequency = 400; // Medium sound for hold
-            break;
-          case 'exhale':
-            frequency = 450; // Higher sound for exhale
-            break;
-          case 'hold-exhale':
-            frequency = 400; // Medium sound for hold
-            break;
-        }
-
-        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.1);
-      } catch (error) {
-        console.log('Audio not supported');
-      }
+      const soundType = (localStorage.getItem('sereneflow-sound-type') as SoundType) || 'gentle-bells';
+      createSoothingSound(soundType, phase);
     }
   }, [phase, duration, isActive]);
 

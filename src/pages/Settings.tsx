@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import Navigation from "@/components/Navigation";
-import FeedbackSettings from "@/components/FeedbackSettings";
+import SoundHapticSettings from "@/components/SoundHapticSettings";
 import AuthModal from "@/components/AuthModal";
 import { toast } from "sonner";
 
@@ -174,9 +174,9 @@ const Settings = () => {
           </CardContent>
         </Card>
 
-        {/* Feedback Settings */}
+        {/* Sound & Haptic Settings */}
         <div className="mb-6">
-          <FeedbackSettings />
+          <SoundHapticSettings />
         </div>
 
         {/* Learning */}

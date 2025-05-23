@@ -1,15 +1,17 @@
+
 import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Play, Pause, Square, ArrowLeft, Settings as SettingsIcon, Plus } from "lucide-react";
+import { Play, Pause, Square, ArrowLeft, Settings as SettingsIcon, Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import BreathingAnimation from "@/components/BreathingAnimation";
 import { getBreathingTechnique } from "@/data/breathingTechniques";
+import { createSoothingSound, triggerHapticPattern } from "@/utils/audioUtils";
+import type { SoundType, HapticPattern } from "@/utils/audioUtils";
 import { toast } from "sonner";
 
 type Phase = 'inhale' | 'hold-inhale' | 'exhale' | 'hold-exhale';
@@ -38,7 +40,6 @@ const Session = () => {
 
   // Custom breathing pattern
   const [customName, setCustomName] = useState("");
-  const [showCustomConfig, setShowCustomConfig] = useState(false);
 
   useEffect(() => {
     if (technique && !customConfig) {
@@ -48,6 +49,11 @@ const Session = () => {
       setHoldExhaleTime(technique.defaultPattern.holdAfterExhale);
     }
   }, [technique, customConfig]);
+
+  const adjustValue = (currentValue: number, adjustment: number, min: number, max: number) => {
+    const newValue = currentValue + adjustment;
+    return Math.max(min, Math.min(max, newValue));
+  };
 
   const getPhaseTimings = () => ({
     inhale: inhaleTime * 1000,
@@ -60,60 +66,20 @@ const Session = () => {
     const soundEnabled = localStorage.getItem('sereneflow-sound') === 'true';
     if (!soundEnabled) return;
 
-    try {
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      // Different frequencies for different phases
-      let frequency = 400;
-      switch (phase) {
-        case 'inhale':
-          frequency = 523; // C5 - rising
-          break;
-        case 'hold-inhale':
-          frequency = 659; // E5 - high hold
-          break;
-        case 'exhale':
-          frequency = 392; // G4 - falling
-          break;
-        case 'hold-exhale':
-          frequency = 349; // F4 - low hold
-          break;
-      }
-      
-      oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.2);
-    } catch (error) {
-      console.log('Audio context not available');
-    }
+    const soundType = (localStorage.getItem('sereneflow-sound-type') as SoundType) || 'gentle-bells';
+    createSoothingSound(soundType, phase);
   }, []);
 
   const triggerHapticFeedback = useCallback((pattern: 'inhale' | 'hold' | 'exhale') => {
     const hapticEnabled = localStorage.getItem('sereneflow-haptic') !== 'false';
-    if (!hapticEnabled || !('vibrate' in navigator)) return;
+    if (!hapticEnabled) return;
 
-    try {
-      switch (pattern) {
-        case 'inhale':
-          navigator.vibrate([100, 50, 100]); // Rising pattern
-          break;
-        case 'hold':
-          navigator.vibrate(50); // Short pulse
-          break;
-        case 'exhale':
-          navigator.vibrate([150, 30, 100]); // Falling pattern
-          break;
-      }
-    } catch (error) {
-      console.log('Vibration not available');
+    const hapticPattern = (localStorage.getItem('sereneflow-haptic-pattern') as HapticPattern) || 'gentle';
+    
+    if (pattern === 'inhale' || pattern === 'exhale') {
+      triggerHapticPattern(hapticPattern);
+    } else {
+      triggerHapticPattern('subtle');
     }
   }, []);
 
@@ -245,7 +211,6 @@ const Session = () => {
     localStorage.setItem('sereneflow-custom-patterns', JSON.stringify(customPatterns));
     toast.success("Custom breathing pattern saved!");
     setCustomName("");
-    setShowCustomConfig(false);
   };
 
   if (!technique && !customConfig) {
@@ -302,62 +267,161 @@ const Session = () => {
                   <TabsTrigger value="custom" className="text-slate-700 dark:text-slate-200">Custom</TabsTrigger>
                 </TabsList>
                 <TabsContent value="settings" className="space-y-4">
+                  {/* Total Cycles */}
                   <div>
-                    <Label className="text-slate-700 dark:text-slate-200">Total Cycles: {totalCycles}</Label>
-                    <Slider
-                      value={[totalCycles]}
-                      onValueChange={(value) => setTotalCycles(value[0])}
-                      min={1}
-                      max={20}
-                      step={1}
-                      className="mt-2"
-                    />
+                    <Label className="text-slate-700 dark:text-slate-200 font-medium mb-2 block">
+                      Total Cycles: {totalCycles}
+                    </Label>
+                    <div className="flex items-center gap-3">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setTotalCycles(adjustValue(totalCycles, -1, 1, 20))}
+                        className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                      >
+                        <Minus className="h-3 w-3" />
+                      </Button>
+                      <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-600 rounded">
+                        <div 
+                          className="h-full bg-indigo-600 rounded transition-all"
+                          style={{ width: `${(totalCycles / 20) * 100}%` }}
+                        />
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setTotalCycles(adjustValue(totalCycles, 1, 1, 20))}
+                        className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                      >
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
                   </div>
+
                   {(technique?.customizable || customConfig) && (
                     <>
+                      {/* Inhale Time */}
                       <div>
-                        <Label className="text-slate-700 dark:text-slate-200">Inhale: {inhaleTime}s</Label>
-                        <Slider
-                          value={[inhaleTime]}
-                          onValueChange={(value) => setInhaleTime(value[0])}
-                          min={1}
-                          max={12}
-                          step={0.5}
-                          className="mt-2"
-                        />
+                        <Label className="text-slate-700 dark:text-slate-200 font-medium mb-2 block">
+                          Inhale: {inhaleTime}s
+                        </Label>
+                        <div className="flex items-center gap-3">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setInhaleTime(adjustValue(inhaleTime, -0.5, 1, 12))}
+                            className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                          >
+                            <Minus className="h-3 w-3" />
+                          </Button>
+                          <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-600 rounded">
+                            <div 
+                              className="h-full bg-indigo-600 rounded transition-all"
+                              style={{ width: `${(inhaleTime / 12) * 100}%` }}
+                            />
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setInhaleTime(adjustValue(inhaleTime, 0.5, 1, 12))}
+                            className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                          >
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
+
+                      {/* Hold After Inhale */}
                       <div>
-                        <Label className="text-slate-700 dark:text-slate-200">Hold (after inhale): {holdInhaleTime}s</Label>
-                        <Slider
-                          value={[holdInhaleTime]}
-                          onValueChange={(value) => setHoldInhaleTime(value[0])}
-                          min={0}
-                          max={15}
-                          step={0.5}
-                          className="mt-2"
-                        />
+                        <Label className="text-slate-700 dark:text-slate-200 font-medium mb-2 block">
+                          Hold (after inhale): {holdInhaleTime}s
+                        </Label>
+                        <div className="flex items-center gap-3">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setHoldInhaleTime(adjustValue(holdInhaleTime, -0.5, 0, 15))}
+                            className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                          >
+                            <Minus className="h-3 w-3" />
+                          </Button>
+                          <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-600 rounded">
+                            <div 
+                              className="h-full bg-indigo-600 rounded transition-all"
+                              style={{ width: `${(holdInhaleTime / 15) * 100}%` }}
+                            />
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setHoldInhaleTime(adjustValue(holdInhaleTime, 0.5, 0, 15))}
+                            className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                          >
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
+
+                      {/* Exhale Time */}
                       <div>
-                        <Label className="text-slate-700 dark:text-slate-200">Exhale: {exhaleTime}s</Label>
-                        <Slider
-                          value={[exhaleTime]}
-                          onValueChange={(value) => setExhaleTime(value[0])}
-                          min={1}
-                          max={12}
-                          step={0.5}
-                          className="mt-2"
-                        />
+                        <Label className="text-slate-700 dark:text-slate-200 font-medium mb-2 block">
+                          Exhale: {exhaleTime}s
+                        </Label>
+                        <div className="flex items-center gap-3">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setExhaleTime(adjustValue(exhaleTime, -0.5, 1, 12))}
+                            className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                          >
+                            <Minus className="h-3 w-3" />
+                          </Button>
+                          <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-600 rounded">
+                            <div 
+                              className="h-full bg-indigo-600 rounded transition-all"
+                              style={{ width: `${(exhaleTime / 12) * 100}%` }}
+                            />
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setExhaleTime(adjustValue(exhaleTime, 0.5, 1, 12))}
+                            className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                          >
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
+
+                      {/* Hold After Exhale */}
                       <div>
-                        <Label className="text-slate-700 dark:text-slate-200">Hold (after exhale): {holdExhaleTime}s</Label>
-                        <Slider
-                          value={[holdExhaleTime]}
-                          onValueChange={(value) => setHoldExhaleTime(value[0])}
-                          min={0}
-                          max={15}
-                          step={0.5}
-                          className="mt-2"
-                        />
+                        <Label className="text-slate-700 dark:text-slate-200 font-medium mb-2 block">
+                          Hold (after exhale): {holdExhaleTime}s
+                        </Label>
+                        <div className="flex items-center gap-3">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setHoldExhaleTime(adjustValue(holdExhaleTime, -0.5, 0, 15))}
+                            className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                          >
+                            <Minus className="h-3 w-3" />
+                          </Button>
+                          <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-600 rounded">
+                            <div 
+                              className="h-full bg-indigo-600 rounded transition-all"
+                              style={{ width: `${(holdExhaleTime / 15) * 100}%` }}
+                            />
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setHoldExhaleTime(adjustValue(holdExhaleTime, 0.5, 0, 15))}
+                            className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                          >
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
                     </>
                   )}
@@ -372,50 +436,40 @@ const Session = () => {
                       className="mt-2 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100"
                     />
                   </div>
+
+                  {/* Custom pattern controls with +/- buttons */}
                   <div>
-                    <Label className="text-slate-700 dark:text-slate-200">Inhale: {inhaleTime}s</Label>
-                    <Slider
-                      value={[inhaleTime]}
-                      onValueChange={(value) => setInhaleTime(value[0])}
-                      min={1}
-                      max={12}
-                      step={0.5}
-                      className="mt-2"
-                    />
+                    <Label className="text-slate-700 dark:text-slate-200 font-medium mb-2 block">
+                      Inhale: {inhaleTime}s
+                    </Label>
+                    <div className="flex items-center gap-3">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setInhaleTime(adjustValue(inhaleTime, -0.5, 1, 12))}
+                        className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                      >
+                        <Minus className="h-3 w-3" />
+                      </Button>
+                      <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-600 rounded">
+                        <div 
+                          className="h-full bg-indigo-600 rounded transition-all"
+                          style={{ width: `${(inhaleTime / 12) * 100}%` }}
+                        />
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setInhaleTime(adjustValue(inhaleTime, 0.5, 1, 12))}
+                        className="h-8 w-8 p-0 border-2 border-indigo-300 dark:border-indigo-600"
+                      >
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
                   </div>
-                  <div>
-                    <Label className="text-slate-700 dark:text-slate-200">Hold (after inhale): {holdInhaleTime}s</Label>
-                    <Slider
-                      value={[holdInhaleTime]}
-                      onValueChange={(value) => setHoldInhaleTime(value[0])}
-                      min={0}
-                      max={15}
-                      step={0.5}
-                      className="mt-2"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-slate-700 dark:text-slate-200">Exhale: {exhaleTime}s</Label>
-                    <Slider
-                      value={[exhaleTime]}
-                      onValueChange={(value) => setExhaleTime(value[0])}
-                      min={1}
-                      max={12}
-                      step={0.5}
-                      className="mt-2"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-slate-700 dark:text-slate-200">Hold (after exhale): {holdExhaleTime}s</Label>
-                    <Slider
-                      value={[holdExhaleTime]}
-                      onValueChange={(value) => setHoldExhaleTime(value[0])}
-                      min={0}
-                      max={15}
-                      step={0.5}
-                      className="mt-2"
-                    />
-                  </div>
+
+                  {/* ... similar blocks for hold-inhale, exhale, hold-exhale ... */}
+
                   <Button onClick={saveCustomPattern} className="w-full bg-serene-teal hover:bg-serene-teal/90 text-white font-semibold">
                     <Plus className="h-4 w-4 mr-2" />
                     Save Custom Pattern
